@@ -14,10 +14,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
         { name: 'priority', displayName: 'Priority', type:'number',width:'10%'},
         { name: 'responsible', displayName: 'responsible', type:'number',width:'10%'},
         { name: 'userCollection', displayName: 'Users', type: 'object', enableCellEdit: false, width: '20%' }
-
-
-
-
     ];
 
     $scope.msg = {};
@@ -26,8 +22,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
         //set gridApi on scope
         $scope.gridApi = gridApi;
 
-
-
         gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
             console.log(rowEntity);
@@ -35,17 +29,12 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
         });
     };
 
-
     $http.get('http://localhost:8080/task/allTask')
         .success(function(data) {
 
             $scope.gridOptions.data = data;
         });
     $scope.info = {};
-
-
-
-
 
     $scope.getCurrentSelection = function() {
         var values = [];
@@ -55,6 +44,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
         }
         $scope.printSelection = values.toString();
     };
+
 
 
 }]);

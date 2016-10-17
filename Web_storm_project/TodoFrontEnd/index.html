@@ -9,10 +9,13 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
     <script src="node_modules/angular-ui-grid/ui-grid.js"></script>
     <script type="text/plain" src="node_modules/angular-ui-grid/ui-grid.min.css"></script>
-    <link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css" />
+    <link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css"/>
     <script src="js/app.js"></script>
     <script src="js/controllers/MainController.js"></script>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="node_modules/angular-xeditable/dist/css/xeditable.css" />
+    <script src="js/controllers/UserController.js"></script>
+    <script src="node_modules/angular-xeditable/dist/js/xeditable.js"></script>
 </head>
 <body>
 
@@ -28,6 +31,11 @@
     <button type="button" class="btn btn-success" ng-click="getCurrentFocus()">Get Current focused cell</button>  <span ng-bind="currentFocused"></span>
     <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
     <input type="text" ng-model="printSelection" placeholder="Edit User" class="printSelection">
+    <div ng-controller="ChecklistCtrl">
+        <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
+            {{ showStatus() }}
+        </a>
+    </div>
     <br>
 
     
