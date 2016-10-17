@@ -5,29 +5,40 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
    // console.log("MainVtrl:$scope.parentData.message:" +$scope.parentData.message);
  //   console.log("MainCtrl data.message: "+ LoginController.parentData.message);
 
+/////////Search Filtering ///////////
+//    $scope.highlightFilteredHeader = function( row, rowRenderIndex, col, colRenderIndex ) {
+//        if( col.filters[0].term ){
+//            return 'header-filtered';
+//        } else {
+//            return '';
+//        }
+//    };
+//
+//    $scope.toggleFiltering = function(){
+//        $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+//        $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
+//    };
 
+    /////////Search Filtering ///////////
     $scope.gridOptions = {
         enableFiltering: true,
         modifierKeysToMultiSelectCells: true,
         showGridFooter: true,
         enableSorting: true,
         enableCellEditOnFocus: true,
-
         columnDefs: [
             {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '4%'},
-            {name: 'label', displayName: 'Label (editable)', width: '5%'},
-            {name: 'description', displayName: 'Description (editable)', width: '30%'},
+            {name: 'label', displayName: 'Label (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '5%'},
+            {name: 'description', displayName: 'Description (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '30%'},
             {name: 'status', displayName: 'Status', type: 'number', width: '10%'},
             {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%'},
             {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%'},
             {name: 'priority', displayName: 'Priority', type: 'number', width: '6%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', enableCellEdit: true, width: '20%'}]
-    };
+            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', /*enableCellEdit: false,*/ width: '20%'}
+        ]    };
 
-
-//Add Row ///////////////
-
+//Add Row  ///////////////
 
     $scope.addData = function () {
         var n = $scope.gridOptions.data.length + 1;
@@ -36,14 +47,13 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             "label": "label",
             "description": "Description",
             "status": "Status",
-            "startTime":  new Date(),
-            "finishTime":  new Date(),
+            "startTime": "startTime",
+            "finishTime": "finishTime",
             "priority": "priority",
             "responsible": "responsible",
-            "userCollection": []
+            "userCollection": "Users"
         });
     };
-
 
     var columnDefs1 = [
         {name: 'idtask'},
@@ -66,7 +76,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
 //Add Row////////////
-
 
 
     $scope.msg = {};
@@ -120,9 +129,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                 console.error(response);
             });
         });
-        //Single filter/////
-        $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
-        //Single filter/////
     };
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
@@ -130,11 +136,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     if($scope.mainData.logs="false"){
         $http.get('http://localhost:8080/task/allTask')
             .success(function (data) {
-                data.forEach( function addDates( row, index ){
-                    row.startTime = new Date();
-                   //row.startTime.setDate(today.getDate() + ( index % 14 ) );
-
-                });
                 $scope.gridOptions.data = data;
             });
     }else{
@@ -147,30 +148,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $window.location.reload();
         console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
     }
+   
 
-    //Single filter/////
-
-    $scope.filter = function() {
-        $scope.gridApi.grid.refresh();
-    };
-
-    $scope.singleFilter = function( renderableRows ){
-        var matcher = new RegExp($scope.filterValue);
-        renderableRows.forEach( function( row ) {
-            var match = false;
-            [ 'label', 'description' ].forEach(function( field ){
-                if ( row.entity[field].match(matcher) ){
-                    match = true;
-                }
-            });
-            if ( !match ){
-                row.visible = false;
-            }
-        });
-        return renderableRows;
-    };
-
-    //Single filter/////
     $scope.user = {status: []};
 
     $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
@@ -232,7 +211,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     // Keresés///////////////////
-   /* $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
+    $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
         if (col.filters[0].term) {
             return 'header-filtered';
         } else {
@@ -245,15 +224,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     };
 
+
+}]);
+app.filter('mapGender', function() {
+    var genderHash = {
+        1: 'male',
+        2: 'female'
+    };
+
     return function (input) {
         if (!input) {
             return '';
         } else {
             return genderHash[input];
         }
-    };*/
-
-
-
-}]);
-
+    };
+});;
