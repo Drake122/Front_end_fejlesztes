@@ -101,7 +101,7 @@
                 <br>
                 <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
                 <br>
-                  <button id="toggleFlat" ng-click="toggleFlat()" class="btn btn-success" >Toggle Flat Access</button><span>  Current setting: {{gridOptions.flatEntityAccess}}</span>
+                 <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
                 <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
                 <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
                 <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
