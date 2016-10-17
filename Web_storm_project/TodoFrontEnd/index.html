@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css"/>
     <script src="js/app.js"></script>
     <script src="js/controllers/MainController.js"></script>
+    <script src="js/controllers/MainCtrl.js"></script>
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="node_modules/angular-xeditable/dist/css/xeditable.css"/>
     <script src="js/controllers/LoginController.js"></script>
@@ -54,7 +55,7 @@
     </style>
 </head>
 <body  ng-app="app">
-
+<div ng-controller="MainController">
 <div class="container-fluid">
     <div class="row content">
         <div   ng-controller="LoginController" class="col-sm-3 sidenav">
@@ -119,6 +120,6 @@
 <footer class="container-fluid">
     <p>Footer Text</p>
 </footer>
-
+</div>
 </body>
 </html>

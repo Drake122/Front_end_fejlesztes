@@ -13,32 +13,3 @@ app.config(function ($httpProvider) {
 app.run(function(editableOptions) {
     editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 });
-
-app.factory('myFactoryService',function(){
-
-
-    var data="";
-
-    //var setData = function(str){
-    //    data = str;
-    //
-    //}
-    //var getData = function(){
-    //    return data;
-    //}
-    //return {getData: getData};
-
-    return{
-        getData:function() {
-            return data;
-        },
-        setData:function(str){
-            data = str;
-        }
-
-
-        };
-
-
-
-});
