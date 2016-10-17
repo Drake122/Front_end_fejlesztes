@@ -1,3 +1,6 @@
+.header-filtered {
+    color: blue;
+}
 .editable-checklist label {
     display: block;
 }
