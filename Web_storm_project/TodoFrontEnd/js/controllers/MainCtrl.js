@@ -73,7 +73,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     ];
 
     $scope.msg = {};
-    $scope.editedUsers = [];
+    //$scope.editedUsers = [];
     $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
@@ -88,15 +88,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             //TODO replace {id}
             var idTaskTemp = rowEntity.idtask;
             var urlWithId = 'http://localhost:8080/task/updateTaskById/'+idTaskTemp;
-            var jsonDatatemp = angular.toJson(rowEntity);
+           // var jsonDatatemp = angular.toJson(rowEntity);
             var jsonDatatemp = rowEntity;
             console.log("jsonDatatemp: ");
             console.log(jsonDatatemp);
-
-
             var jsonData=jsonDatatemp;
-           // jsonData.userCollection=[];
-            console.log("jsonData2: "+jsonData);
           angular.forEach($scope.allUsers, function (user) {
                 var value = user.iduser;
                 var text = user.name;
@@ -155,17 +151,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
         values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
-        $scope.printSelection = values.toString();
+       // $scope.printSelection = values.toString();
         angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
             $scope.user.status.push(val);
         })
+
     };
 
 
-    $scope.statuses = [];
+
 
     $http.get('http://localhost:8080/user/allUser')
         .success(function (data) {
+            $scope.statuses = [];
             //  console.log( $scope.statuses);
             $scope.allUsers = data;
             angular.forEach($scope.allUsers, function (u) {
@@ -174,6 +172,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                 var user = {value: value, text: text};
                 $scope.statuses.push(user);
             })
+
         });
     /* $scope.setCurrentSelectonUsers=function(){
         if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
@@ -185,7 +184,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         console.log("currentSelection: "+currentSelection[0]);
 
     }*/
-    var selectedUsersIds = [];
+    //var selectedUsersIds = [];
     $scope.showStatus = function () {
         var selected = [];
 
@@ -194,7 +193,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         angular.forEach($scope.statuses, function (s) {
             if ($scope.user.status.indexOf(s.value) >= 0) {
                 selected.push(s.text);
-                selectedUsersIds.push(s.value);
+               // selectedUsersIds.push(s.value);
 
             }
         });
