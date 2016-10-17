@@ -46,12 +46,13 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
 
         }).then(function successCallback(response) {
             console.log(response.data.valasz);
-            if(response.data.valasz=="ok"){
+            if(response.data.valasz!="false"){
                 console.log(response.data.valasz);
                 $scope.loginName+=$scope.username;
-                $scope.mainData.logs=$scope.username;
-                console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
+                $scope.mainData.logs=response.data.valasz;
 
+                console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
+               // $window.location.reload();
 
             }
         }, function errorCallback(response) {

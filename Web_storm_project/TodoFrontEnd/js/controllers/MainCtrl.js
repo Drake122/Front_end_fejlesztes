@@ -102,17 +102,26 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
             }, function errorCallback(response) {
                 console.error(response);
             });
-            ;
-
         });
     };
+
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
-    $http.get('http://localhost:8080/task/allTask')
+    var userId= $scope.mainData.logs;
+    if($scope.mainData.logs!="false"){
+        $http.get('http://localhost:8080/task/allTask')
+            .success(function (data) {
+                $scope.gridOptions.data = data;
+            });
+    }else{
+
+    $http.get('http://localhost:8080/user//findAllTaskByUserId/'+userId)
         .success(function (data) {
             $scope.gridOptions.data = data;
+
         });
+        //$window.location.reload();
 
-
+    }
    
 
     $scope.user = {status: []};
