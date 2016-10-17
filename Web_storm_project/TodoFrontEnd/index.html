@@ -1,6 +1,12 @@
-<!doctype html>
-<html ng-app="app">
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <title>ToDo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-touch.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.js"></script>
@@ -8,7 +14,7 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <script src="node_modules/checklist-model/checklist-model.js"></script>
     <script src="node_modules/angular-ui-grid/ui-grid.js"></script>
     <script type="text/plain" src="node_modules/angular-ui-grid/ui-grid.min.css"></script>
@@ -17,37 +23,102 @@
     <script src="js/controllers/MainController.js"></script>
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="node_modules/angular-xeditable/dist/css/xeditable.css"/>
-   <!-- <script src="js/controllers/UserController.js"></script> -->
+    <script src="js/controllers/LoginController.js"></script>
     <script src="node_modules/angular-xeditable/dist/js/xeditable.js"></script>
+
+    <style>
+        /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+        .row.content {height: 1500px}
+
+        /* Set gray background color and 100% height */
+        .sidenav {
+            background-color: #f1f1f1;
+            height: 100%;
+        }
+
+        /* Set black background color, white text and some padding */
+        footer {
+            background-color: #555;
+            color: white;
+            padding: 15px;
+        }
+
+        /* On small screens, set height to 'auto' for sidenav and grid */
+        @media screen and (max-width: 767px) {
+            .sidenav {
+                height: auto;
+                padding: 15px;
+            }
+            .row.content {height: auto;}
+        }
+    </style>
 </head>
-<body>
+<body  ng-app="app">
+
+<div class="container-fluid">
+    <div class="row content">
+        <div   ng-controller="LoginController" class="col-sm-3 sidenav">
+        <h1> Üdvözöllek{{loginName}} a feladatkezelőben</h1>
+            <form role="form">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" ng-model="username">
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" class="form-control" ng-model="password" placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn btn-default"  ng-click="login()">Submit</button>
+                <h1>{{usr}}</h1>
+            </form>
+
+        </div>
+
+        <div  ng-controller="MainCtrl" class="col-sm-9">
+            <h4><small>RECENT POSTS</small></h4>
+            <hr>
+            <h2>I Love Food</h2>
 
 
-<div ng-controller="MainCtrl">
-    <!--  <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>  -->
-    You can use asterisks to fuzz-match, i.e. use "*z*" as your filter to show any row where that column contains a "z".
-    <br>
-    <br>
-    <strong>Note:</strong> The third column has the filter input disabled, but actually has a filter set in code that requires every columb to have an 'a' in their name.
-    <br>
-    <br>
+                <!--  <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>  -->
+                You can use asterisks to fuzz-match, i.e. use "*z*" as your filter to show any row where that column
+                contains a "z".
+                <br>
+                <br>
+                <strong>Note:</strong> The third column has the filter input disabled, but actually has a filter set in code
+                that requires every columb to have an 'a' in their name.
+                <br>
+                <br>
 
-    <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
+                <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
 
-    <br>
-    <br>
-   <!-- <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button> -->
-    <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
-    <br>
-    <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
-    <br>
-    <div id="grid1" ui-grid="gridOptions"  ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
-    <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
-        <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
-            {{ showStatus() }}
-        </a>
+                <br>
+                <br>
+                <!-- <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button> -->
+                <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
+                <br>
+                <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
+                <br>
 
+                <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
+                <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
+                <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
+                    {{ showStatus() }}
+                </a>
+
+
+
+
+
+        </div>
+    </div>
 </div>
+
+
+<footer class="container-fluid">
+    <p>Footer Text</p>
+</footer>
 
 </body>
 </html>

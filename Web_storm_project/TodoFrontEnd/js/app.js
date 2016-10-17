@@ -13,3 +13,21 @@ app.config(function ($httpProvider) {
 app.run(function(editableOptions) {
     editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 });
+
+app.service('productService', function() {
+    var productList = [];
+
+    var addProduct = function(newObj) {
+        productList.push(newObj);
+    };
+
+    var getProducts = function(){
+        return productList;
+    };
+
+    return {
+        addProduct: addProduct,
+        getProducts: getProducts
+    };
+
+});
