@@ -28,6 +28,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $ht
         { name: 'priority', displayName: 'Priority', type:'number',width:'10%'},
         { name: 'responsible', displayName: 'responsible', type:'number',width:'10%'},
         { name: 'userCollection', displayName: 'Users', type: 'object', width: '20%' },
+        { name: 'userCollection', displayName: 'Userék', type: 'object', width: '20%' },
+
 
 
     ];
@@ -38,7 +40,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $ht
         //set gridApi on scope
         $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-            $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
+            $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
+            console.log(rowEntity);
             $scope.$apply();
         });
     };
