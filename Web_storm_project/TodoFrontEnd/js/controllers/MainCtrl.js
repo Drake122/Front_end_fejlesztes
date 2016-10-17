@@ -34,7 +34,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
             var dataAdd=
             {
-            "idtask": ++$scope.LastIdtask,
+            "idtask": $scope.LastIdtask+1,
             "label": "label",
             "description": "Description",
             "status": 1,
@@ -96,8 +96,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     $scope.$watch('mainData.logs', function (newVal, oldVal) { if (oldVal !== newVal && newVal !== undefined) {
         userId=$scope.mainData.logs;
         $scope.loadDataInTable(userId);
-        //$scope.gridOptions.data = newVal.data.someData;
-        console.log("userId changed!!");
+       // console.log("userId changed!!");
     } }, true);
 
 
@@ -163,17 +162,13 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     ///EDIT USER BUTTON //////
 
-    //console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
-
     $scope.loadDataInTable = function(userId){
         if(userId>0){
             loadAllTaskByUserId($http, userId, $scope);
 
         }else{
             $scope.gridOptions.data = [];
-            //loadAllTask($http, $scope);
-            //
-            //console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
+
         }
 
 
@@ -219,47 +214,26 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $scope.uncheckAll();
         var values = [];
         var currentSelection =$scope.gridApi.cellNav.getCurrentSelection();
-      //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
-      //  $scope.printSelection = values.toString();
-
-        //////Check-List-Model/////////////
-       // $scope.user.chekedUsers=angular.copy(currentSelection[0].row.entity.userCollection);
-
-        //////Check-List-Model/////////////
 
         angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
             values.push(val);
         });
-        //console.log("values: ");
-        //console.log(values);
         angular.forEach( $scope.users,function(us){
             for(var i=0; i<values.length; i++){
                 if(angular.equals(values[i],us.name)){
                     $scope.selectedUsers.push(us);
                 }
             }
-
         })
-        //console.log("  $scope.selectedUsers:");
-        //console.log( $scope.selectedUsers);
-
-   //
-   //console.log("user-statusbetölti a getcurrentSelectiont: ");
-   //     console.log($scope.user.status);
     };
 
 
     ////Hide-Show//////
-
     $scope.myVar =true;
     $scope.toggle = function() {
         $scope.myVar = !$scope.myVar;
         $scope.getCurrentSelection();
-
     };
-
-
-
     ////Hide-Show//////
 
     ////Check-List-model//////
@@ -267,35 +241,22 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     $scope.compareFn = function(obj1, obj2){
         return obj1.id === obj2.id;
     };
-
     $scope.uncheckAll = function() {
         $scope.selectedUsers.splice(0, $scope.selectedUsers.length);
     };
-
     $scope.saveSelectedUsers =function(){
-        //console.log(" SAVE:  $scope.selectedUsers:");
-        //console.log( $scope.selectedUsers);
-        //console.log(" SAVE előtt:  $scope.gridApi.cellNav.getCurrentSelection().row.entity.userCollection:");
-        //console.log($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection);
         var tempSelectedUsers =[];
         angular.forEach( $scope.selectedUsers,function(us){
             var name = us.name;
             tempSelectedUsers.push(name);
         });
-        //console.log("tempSelectedUsers:");
-        //console.log(tempSelectedUsers);
         $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection=tempSelectedUsers;
-        //console.log(" SAVE utan:  $scope.gridApi.cellNav.getCurrentSelection().row.entity.userCollection:");
-        //console.log($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection);
         var jsonData = updateTask($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity, $scope, $http);
-
         $scope.myVar = !$scope.myVar;
     };
-
     $scope.canceleSelectedUsers = function(){
         $scope.myVar = !$scope.myVar;
     };
-
 
     ////Check-List-model//////
 
@@ -324,15 +285,7 @@ function UsersIdsArrayToNamesArray($scope, row) {
 function updateTask(rowEntity, $scope, $http) {
     var idTaskTemp = rowEntity.idtask;
     var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
-    // var jsonDatatemp = angular.toJson(rowEntity);
-    // console.log("rowEntity elotte: ");
-    // console.log(rowEntity);
     var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
-    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
-
-    // var jsonData = angular.toJson(rowEntity);
-    //console.log("rowEntity utana: ");
-    //console.log(rowEntity);
 
     $http({
         method: 'PUT',
@@ -341,7 +294,6 @@ function updateTask(rowEntity, $scope, $http) {
             'Content-Type': 'application/json; charset=utf-8'
         },
         data: jsonData
-
     }).then(function successCallback(response) {
         console.log(response);
     }, function errorCallback(response) {
@@ -367,14 +319,12 @@ function convertUserNamesToUserIdsInuserCollection(rowEntity, $scope) {
                 jsonData.userCollection.splice(i, 1, value);
             }
         }
-        //var user = {value: value, text: text};
-        //$scope.statuses.push(user);
+
     });
     return jsonData;
 }
 
 function convertUserIdsToUserNamesInUserCollection(rowEntity, $scope){
-   // var jsonDataTemp = rowEntity;
     angular.forEach($scope.allUsers, function (user) {
         var value = user.iduser;
         var text = user.name;
@@ -384,8 +334,7 @@ function convertUserIdsToUserNamesInUserCollection(rowEntity, $scope){
                 rowEntity.userCollection.splice(i, 1, text);
             }
         }
-        //var user = {value: value, text: text};
-        //$scope.statuses.push(user);
+
     });
 
 }
@@ -436,16 +385,9 @@ function loadAllTaskByUserId($http, userId, $scope) {
 }
 
 function loadAllTaskForLastIdTemp($http, $scope) {
-
     $http.get('http://localhost:8080/task/allTask')
         .success(function (data) {
             $scope.LastIdtask = data.length+1;
-            console.log("LastIdtask:");
-            console.log($scope.LastIdtask);
             return $scope.LastIdtask;
         })
-
-
-
-
 }
