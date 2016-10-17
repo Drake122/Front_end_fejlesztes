@@ -96,33 +96,33 @@
                 <br>
                  <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
                 <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
-                <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
-                <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
-                    {{ showStatus() }}
-                </a>
+            <!--   <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
+             <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
+                 {{ showStatus() }}
+             </a> -->
 
-            <button ng-click="toggle()">Hide user</button>
+         <button type="button" class="btn btn-success" ng-click="toggle()">Hide user</button>
 
-            <p ng-hide="myVar">
-                First Name: <input type=text ng-model="firstName"><br>
-                Last Name: <input type=text ng-model="lastName"><br><br>
-                Full Name: {{firstName + " " + lastName}}
+         <p ng-hide="myVar">
+             First Name: <input type=text ng-model="firstName"><br>
+             Last Name: <input type=text ng-model="lastName"><br><br>
+             Full Name: {{firstName + " " + lastName}}
 
-                <label ng-repeat="role in roles">
-                    <input type="checkbox" checklist-model="getRoles()" checklist-value="role" ng-change="check(role, checked)"> {{role}}
-                </label>
-            </p>
-
-
+             <label ng-repeat="role in allUsersInCheckbox">
+                 <input type="checkbox" checklist-model="getChekedUsers()" checklist-value="role" ng-change="check(chekedUsers, checked)"> {{role}}
+             </label>
+         </p>
 
 
-        </div>
-    </div>
+
+
+     </div>
+ </div>
 </div>
 
 
 <footer class="container-fluid">
-    <p>Footer Text</p>
+ <p>Footer Text</p>
 </footer>
 </div>
 </body>

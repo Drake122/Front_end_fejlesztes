@@ -210,27 +210,23 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     ///EDIT USER BUTTON //////
     $scope.user = {status: []};
     $scope.editedUsers = [];
-    $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
+    $scope.getCurrentSelection = function () {
         $scope.user = {status: []};
         $scope.editedUsers = [];
 
-
-
-        //if(newClick="0"){
-        //    newClick="1";
-        //}else{
-        //    newClick="0";
-        //}
-       // newClick = (newClick = "0") ? "1" : "0";  //ez miért nem jó
         var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
       //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
         $scope.printSelection = values.toString();
 
         //////Check-List-Model/////////////
-        $scope.user.roles=currentSelection[0].row.entity.userCollection;
-        console.log(" $scope.user.roles:----");
-        console.log( $scope.user.roles);
+        $scope.user.chekedUsers=currentSelection[0].row.entity.userCollection;
+        console.log(" $scope.user.chekedUsers:----");
+        console.log( $scope.user.chekedUsers);
+        console.log(" $scope.user.chekedUsers:  ");
+        console.log( $scope.user.chekedUsers);
+        console.log(" $scope.chekedUsers:  ");
+        console.log( $scope.chekedUsers);
         //////Check-List-Model/////////////
 
         angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
@@ -246,9 +242,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             }
 
         })
-
-   console.log("user-statusbetölti a getcurrentSelectiont: ");
-        console.log($scope.user.status);
+   //
+   //console.log("user-statusbetölti a getcurrentSelectiont: ");
+   //     console.log($scope.user.status);
     };
 
 
@@ -265,19 +261,22 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     ////Hide-Show//////
 
     ////Check-List-model//////
-    $scope.roles =$scope.allUsersInCheckbox;
-    $scope.getRoles = function() {
-        return $scope.user.roles;
+  //  $scope.roles =$scope.allUsersInCheckbox;
+    $scope.getChekedUsers = function() {
+        return $scope.user.chekedUsers;
     };
 
     $scope.check = function(value, checked) {
-        var idx = $scope.user.roles.indexOf(value);
+
+        var idx = $scope.user.chekedUsers.indexOf(value);
         if (idx >= 0 && !checked) {
-            $scope.user.roles.splice(idx, 1);
+            $scope.user.chekedUsers.splice(idx, 1);
         }
         if (idx < 0 && checked) {
-            $scope.user.roles.push(value);
+            $scope.user.chekedUsers.push(value);
         }
+
+
     };
     //$scope.user = {
     //    roles: ['user']
@@ -296,24 +295,24 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         console.log("currentSelection: "+currentSelection[0]);
 
     }*/
-   var selectedUsersIds = [];
+ //  var selectedUsersIds = [];
 
 ////Show Status///////////
-    $scope.showStatus = function () {
-        var selected = [];
+//    $scope.showStatus = function () {
+//        var selected = [];
+//
+//        $scope.editedUsers = [];
+//      //  currentSelection[0].row.entity.userCollection.clear();
+//       angular.forEach($scope.statuses, function (s) {
+//           if ($scope.user.status.indexOf(s.value) >= 0) {
+//                selected.push(s.text);
+//                selectedUsersIds.push(s.value);
 
-        $scope.editedUsers = [];
-      //  currentSelection[0].row.entity.userCollection.clear();
-       angular.forEach($scope.statuses, function (s) {
-           if ($scope.user.status.indexOf(s.value) >= 0) {
-                selected.push(s.text);
-                selectedUsersIds.push(s.value);
-
-            }
-       });
+       //     }
+       //});
         //console.log("selected: ");
         //console.log(selected);
-        $scope.editedUsers = selected;
+        //$scope.editedUsers = selected;
       //  $scope.setCurrentSelectonUsers();
       //  console.log("editedUUsers");
       //  console.log($scope.editedUsers);
@@ -323,16 +322,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
       //  console.log($scope.user.status);
       //  console.log("newKlick:");
       //  console.log(newClick);
-        var tempEditedUsers = $scope.editedUsers;
-        if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length>0 /*&& (newClick="0") */){
-            $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= tempEditedUsers;
-
-        }
-         tempEditedUsers=[];
-
-        return selected.length ? selected.join(', ') : 'Not set';
-
-    };
+    //    var tempEditedUsers = $scope.editedUsers;
+    //    if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length>0 /*&& (newClick="0") */){
+    //        $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= tempEditedUsers;
+    //
+    //    }
+    //     tempEditedUsers=[];
+    //
+    //    return selected.length ? selected.join(', ') : 'Not set';
+    //
+    //};
 ////Show Status///////////
 
     ///EDIT USER BUTTON //////
