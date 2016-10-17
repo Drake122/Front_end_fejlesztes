@@ -64,6 +64,16 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
         $rootscope.showBanner= false;
 
     }])*/
+    $scope.regHide=true;
+    $scope.hideLogin =false;
+    $scope.toggle = function() {
+        $scope.hideLogin = !$scope.hideLogin;
+        $scope.regHide = !$scope.regHide;
+
+
+    };
+
+
 
     $scope.logout = function(){
 

@@ -92,12 +92,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 //Add Row////////////
 
 
-
+    var userId=$scope.mainData.logs;
     $scope.msg = {};
     //$scope.editedUsers = [];
     $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
 
+        $scope.loadDataInTable(userId);
+        $scope.$watch('$scope.mainData.logs', function() {
+
+             $scope.loadDataInTable
+            $scope.gridApi.core.refresh();
+            console.log("table refreshed!!");
+        });
 
 
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
@@ -171,15 +178,22 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     ///EDIT USER BUTTON //////
 
-    console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
-    var userId= $scope.mainData.logs;
-    if(userId="false"){
-        loadAllTask($http, $scope);
-    }else{
-        loadAllTaskByUserId($http, userId, $scope);
-        // $window.location.reload();
-        console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
+    //console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
+
+    $scope.loadDataInTable = function(userId){
+        if(userId>0){
+            loadAllTaskByUserId($http, userId, $scope);
+
+        }else{
+            loadAllTask($http, $scope);
+            // $window.location.reload();
+            console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
+        }
+
+
     }
+
+
 
     //Single filter/////
 
@@ -421,7 +435,14 @@ function loadAllTask($http, $scope) {
 function loadAllTaskByUserId($http, userId, $scope) {
     $http.get('http://localhost:8080/user//findAllTaskByUserId/' + userId)
         .success(function (data) {
+            data.forEach(function addDates(row, index) {
+                row.startTime = $scope.formatDate(row.startTime);
+                row.finishTime = $scope.formatDate(row.finishTime);
+                UsersIdsArrayToNamesArray($scope, row);
+                responsibleIdToName($scope, row);
+            });
             $scope.gridOptions.data = data;
-
+            console.log("gridOptionData:");
+            console.log($scope.gridOptions.data);
         });
 }

@@ -11,6 +11,13 @@ body {
     overflow-x: hidden;
     _overflow: auto; /* <=IE6 */
 }
+.ng-hide {
+    /* this is just another form of hiding an element */
+    display: block!important;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
 #container {
     text-align: left;
     margin: 0px auto;
