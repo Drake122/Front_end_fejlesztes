@@ -1,31 +1,4 @@
-function updateTask(rowEntity, $scope, $http) {
-    var idTaskTemp = rowEntity.idtask;
-    var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
-    // var jsonDatatemp = angular.toJson(rowEntity);
-    // console.log("rowEntity elotte: ");
-    // console.log(rowEntity);
-    var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
-    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
 
-    // var jsonData = angular.toJson(rowEntity);
-    //console.log("rowEntity utana: ");
-    //console.log(rowEntity);
-    $scope.$apply();
-    $http({
-        method: 'PUT',
-        url: urlWithId,
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-        },
-        data: jsonData
-
-    }).then(function successCallback(response) {
-        console.log(response);
-    }, function errorCallback(response) {
-        console.error(response);
-    });
-    return jsonData;
-}
 app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
     //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
@@ -50,7 +23,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '16%'},
             {name: 'priority', displayName: 'Priority', type: 'number', width: '2%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', enableCellEdit: true, width: '20%'}]
+            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', enableCellEdit: false, width: '20%'}]
     };
 
 
@@ -122,17 +95,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     //$scope.editedUsers = [];
     $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
-
-
-
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+            $scope.user = {status: []};
+            $scope.editedUsers = [];
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
 
             console.log("MainCtrl: $scope.mainData.logs2 : " )
             console.log($scope.mainData.logs);
             //TODO replace {id}
             var jsonData = updateTask(rowEntity, $scope, $http);
-            // $scope.gridApi.grid.refresh();
+             $scope.gridApi.grid.refresh();
 
 
          /*   angular.forEach($scope.allUsers, function (user) {
@@ -151,8 +123,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             console.log("ujratoltve!!");
             console.log(jsonData);
           //  convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
-            $scope.user = {status: []};
-            $scope.editedUsers = [];
+
         });
        
 
@@ -187,6 +158,12 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
     var userId= $scope.mainData.logs;
+    console.log("userId: ");
+    console.log(userId);
+
+    //$scope.$watch('$scope.mainData.logs', function() {
+    //    alert('hey, userId has changed!'+userId);
+    //});
     if(userId="false"){
         loadAllTask($http, $scope);
     }else{
@@ -219,7 +196,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     //Single filter/////
 
-    var newClick="0";
+  //  var newClick="0";
     ///EDIT USER BUTTON //////
     $scope.user = {status: []};
     $scope.editedUsers = [];
@@ -279,25 +256,20 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
             }
        });
-        //console.log("selected: ");
-        //console.log(selected);
+
         $scope.editedUsers = selected;
-      //  $scope.setCurrentSelectonUsers();
-      //  console.log("editedUUsers");
-      //  console.log($scope.editedUsers);
-      //  console.log("selected");
-      //  console.log(selected);
-      //  console.log("$scope.user.status:");
-      //  console.log($scope.user.status);
-      //  console.log("newKlick:");
-      //  console.log(newClick);
+
         var tempEditedUsers = $scope.editedUsers;
         if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length>0 /*&& (newClick="0") */){
-            $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= tempEditedUsers;
-
+            $scope.gridApi.cellNav.getCurrentSelection()[0].row.sentity.userCollection= tempEditedUsers;
+           // $scope.gridApi.saveColumns();
         }
-         tempEditedUsers=[];
 
+
+
+////Lacinak----Itt kellene lennie valahol a btn btn-primary submit form-nak, amibe beletudnám tenni az updatTaskot
+         tempEditedUsers=[];
+       // updateTask( $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity, $scope, $http);
         return selected.length ? selected.join(', ') : 'Not set';
         console.log("visszairva  !");
     };
@@ -324,7 +296,8 @@ function UsersIdsArrayToNamesArray($scope, row) {
 }
 
 function convertUserNamesToUserIdsInuserCollection(rowEntity, $scope) {
-    var jsonDatatemp = rowEntity;
+    var jsonDatatemp =   angular.copy(rowEntity);
+
     console.log("jsonDatatemp: ");
     console.log(jsonDatatemp);
     var jsonData = jsonDatatemp;
@@ -380,4 +353,34 @@ function loadAllTaskByUserId($http, userId, $scope) {
             $scope.gridOptions.data = data;
 
         });
+}
+
+function updateTask(rowEntity, $scope, $http) {
+    var idTaskTemp = rowEntity.idtask;
+    var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
+    // var jsonDatatemp = angular.toJson(rowEntity);
+    // console.log("rowEntity elotte: ");
+    // console.log(rowEntity);
+    var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
+    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
+
+    // var jsonData = angular.toJson(rowEntity);
+    //console.log("rowEntity utana: ");
+    //console.log(rowEntity);
+    $scope.$apply();
+    $http({
+        method: 'PUT',
+        url: urlWithId,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        data: jsonData
+
+    }).then(function successCallback(response) {
+        console.log(response);
+    }, function errorCallback(response) {
+        console.error(response);
+    });
+   // convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
+    return jsonData;
 }
