@@ -46,4 +46,4 @@ $scope.cancel = function(){
 
 }
 
-}])
+}]);;

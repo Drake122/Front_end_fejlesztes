@@ -1,13 +1,7 @@
 
 app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
-    //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
-
-   // console.log("MainVtrl:$scope.parentData.message:" +$scope.parentData.message);
- //   console.log("MainCtrl data.message: "+ LoginController.parentData.message);
-
-
-
+  
     $scope.gridOptions = {
         enableFiltering: true,
         modifierKeysToMultiSelectCells: true,
@@ -31,13 +25,16 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 //Add Row ///////////////
 
+    loadAllTaskForLastIdTemp($http, $scope);
 
     $scope.addData = function () {
-        var n = $scope.gridOptions.data.length + 1;
+
+   var n= loadAllTaskForLastIdTemp($http, $scope);
+
 
             var dataAdd=
             {
-            "idtask": n,
+            "idtask": ++$scope.LastIdtask,
             "label": "label",
             "description": "Description",
             "status": 1,
@@ -94,17 +91,24 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     var userId=$scope.mainData.logs;
     $scope.msg = {};
-    //$scope.editedUsers = [];
+/////Proba a $scope.mainData.Logs változásának észlelésére/////////////////
+
+    $scope.$watch('mainData.logs', function (newVal, oldVal) { if (oldVal !== newVal && newVal !== undefined) {
+        userId=$scope.mainData.logs;
+        $scope.loadDataInTable(userId);
+        //$scope.gridOptions.data = newVal.data.someData;
+        console.log("userId changed!!");
+    } }, true);
+
+
+/////Proba a $scope.mainData.Logs változásának észlelésére/////////////////
+
+
     $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
 
         $scope.loadDataInTable(userId);
-        $scope.$watch('$scope.mainData.logs', function() {
 
-             $scope.loadDataInTable
-            $scope.gridApi.core.refresh();
-            console.log("table refreshed!!");
-        });
 
 
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
@@ -115,25 +119,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             //TODO replace {id}
             var jsonData = updateTask(rowEntity, $scope, $http);
             $scope.$apply();
-            // $scope.gridApi.grid.refresh();
-
-
-         /*   angular.forEach($scope.allUsers, function (user) {
-                var value = user.iduser;
-                var text = user.name;
-
-                for (var i = 0; i < jsonData.userCollection.length; i++) {
-                    if (angular.equals(text, jsonData.userCollection[i])) {
-                        jsonData.userCollection.splice(i, 1, text);
-                        console.log(i);
-                    }
-                }
-                //var user = {value: value, text: text};
-                //$scope.statuses.push(user);
-            });*/
-            console.log("ujratoltve!!");
-            console.log(jsonData);
-          //  convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
             $scope.user = {status: []};
             $scope.editedUsers = [];
         });
@@ -185,9 +170,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             loadAllTaskByUserId($http, userId, $scope);
 
         }else{
-            loadAllTask($http, $scope);
-            // $window.location.reload();
-            console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
+            $scope.gridOptions.data = [];
+            //loadAllTask($http, $scope);
+            //
+            //console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
         }
 
 
@@ -426,6 +412,7 @@ function loadAllTask($http, $scope) {
                 UsersIdsArrayToNamesArray($scope, row);
                 responsibleIdToName($scope, row);
             });
+
             $scope.gridOptions.data = data;
             console.log("gridOptionData:");
             console.log($scope.gridOptions.data);
@@ -445,4 +432,20 @@ function loadAllTaskByUserId($http, userId, $scope) {
             console.log("gridOptionData:");
             console.log($scope.gridOptions.data);
         });
+
+}
+
+function loadAllTaskForLastIdTemp($http, $scope) {
+
+    $http.get('http://localhost:8080/task/allTask')
+        .success(function (data) {
+            $scope.LastIdtask = data.length+1;
+            console.log("LastIdtask:");
+            console.log($scope.LastIdtask);
+            return $scope.LastIdtask;
+        })
+
+
+
+
 }

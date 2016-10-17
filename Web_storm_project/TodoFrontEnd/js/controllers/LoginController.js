@@ -22,7 +22,7 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
    // console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
     console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
     $scope.regSuccess="";
-    $scope.loginName=" dear ";
+    $scope.loginName=" ";
 
     $scope.login = function () {
         console.log("usename: "+ $scope.username);
@@ -87,5 +87,6 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
 
         $scope.toggeLogin();
         $scope.mainData.logs=-1;
+        $scope.loginName=" ";
     }
 }]);
