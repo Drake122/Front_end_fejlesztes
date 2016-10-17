@@ -291,6 +291,12 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         //console.log(selected);
         $scope.editedUsers = selected;
       //  $scope.setCurrentSelectonUsers();
+        console.log("editedUUsers");
+        console.log($scope.editedUsers);
+        if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length!=0){
+            $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= $scope.editedUsers;
+        }
+
         return selected.length ? selected.join(', ') : 'Not set';
 
     };
