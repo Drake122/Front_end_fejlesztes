@@ -86,6 +86,8 @@
                      <input type="password" class="form-control" ng-model="password" placeholder="Enter password">
                       </div>
                     <button type="submit" class="btn btn-default"  ng-click="login()">Login</button>
+                    <br>
+                    <br>
 
             </form>
         </div>
@@ -94,11 +96,7 @@
             </div>
             <div ng-hide="regHide"  class="ng-hide">
               <h2>  Registration!</h2>
-                <!--<form name="myForm">-->
-                    <!--<input type="email" name="myInput" ng-model="myInput">-->
-                <!--</form>-->
-                <!--<p>The input's valid state is:</p>-->
-                <!--<h1>{{myForm.myInput.$valid}}</h1>-->
+
                 <div  ng-controller="RegisterCtrl">
                     <form name="userForm" ng-submit="submitForm()" novalidate>
 
@@ -123,33 +121,10 @@
                             <p ng-show="userForm.password.$error.maxlength" class="help-block">Username is too long.</p>
                         </div>
 
-
-
                         <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit</button>
                         <button class="btn btn-default"  ng-click="cancel()">Cancel</button>
 
                     </form>
-
-                    <!--<form role="form">-->
-
-                        <!--<div class="form-group">-->
-                            <!--<label>Name:</label>-->
-                            <!--<input type="text" class="form-control" ng-model="username" placeholder="Enter Name">-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--<label>Email:</label>-->
-                            <!--<input type="email" class="form-control" ng-model="email" placeholder="Your Email address">-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--<label>Password:</label>-->
-                            <!--<input type="password" class="form-control" ng-model="password" placeholder="Enter password">-->
-                        <!--</div>-->
-
-                        <!--<button type="submit" class="btn btn-default"  ng-click="reg()">Registration</button>-->
-                        <!--<button class="btn btn-default"  ng-click="cancel()">Cancel</button>-->
-
-                    <!--</form>-->
-
             </div>
                 </div>
             <div ng-hide="regButtonHide" class="ng-hide">
@@ -177,10 +152,7 @@
                 <br>
                  <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
                 <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
-            <!--   <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
-             <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
-                 {{ showStatus() }}
-             </a> -->
+
 
          <button type="button" class="btn btn-success" ng-click="toggle()">Show selected Users</button>
 
@@ -192,8 +164,6 @@
              <button type="button" class="btn btn-success" ng-click="saveSelectedUsers()">Save</button>
              <button type="button" class="btn btn-success" ng-click="canceleSelectedUsers()">Cancel</button>
          </p>
-
-
 
 
      </div>
