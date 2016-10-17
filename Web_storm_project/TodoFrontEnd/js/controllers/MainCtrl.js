@@ -1,4 +1,4 @@
-app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', function ($scope, $http, uiGridConstants, $log) {
+app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
     //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
 
@@ -78,10 +78,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
         $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
-            /*  if($scope.editedUsers.length>0){
-             rowEntity.userCollection=$scope.editedUsers;
+              if($scope.editedUsers.length>0){
+             rowEntity.userCollection.newValue=$scope.editedUsers;
              $scope.editedUsers=[];
-             };*/
+             };
 
             console.log(rowEntity);
             console.log("MainCtrl: $scope.mainData.logs2 : " +$scope.mainData.logs);
@@ -107,7 +107,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
     var userId= $scope.mainData.logs;
-    if($scope.mainData.logs!="false"){
+    if($scope.mainData.logs="false"){
         $http.get('http://localhost:8080/task/allTask')
             .success(function (data) {
                 $scope.gridOptions.data = data;
@@ -119,14 +119,14 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
             $scope.gridOptions.data = data;
 
         });
-        //$window.location.reload();
-
+        $window.location.reload();
+        console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
     }
    
 
     $scope.user = {status: []};
 
-    $scope.getCurrentSelection = function () {
+    $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
         $scope.user = {status: []};
         var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
@@ -151,17 +151,30 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
                 $scope.statuses.push(user);
             })
         });
+    $scope.setCurrentSelectonUsers=function(){
+       /* if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
+            var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
+            currentSelection[0].row.entity.userCollection.clear();
 
+        }*/
+        var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
+        console.log("currentSelection: "+currentSelection[0]);
+
+    }
     $scope.showStatus = function () {
         var selected = [];
         $scope.editedUsers = [];
+       // currentSelection[0].row.entity.userCollection.clear();
         angular.forEach($scope.statuses, function (s) {
             if ($scope.user.status.indexOf(s.value) >= 0) {
                 selected.push(s.text);
+
             }
         });
         $scope.editedUsers = selected;
+        $scope.setCurrentSelectonUsers();
         return selected.length ? selected.join(', ') : 'Not set';
+
     };
 
 

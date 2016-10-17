@@ -52,7 +52,7 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
                 $scope.mainData.logs=response.data.valasz;
 
                 console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
-               // $window.location.reload();
+              //  $window.location.reload();
 
             }
         }, function errorCallback(response) {

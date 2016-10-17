@@ -1,6 +1,6 @@
 app.controller('MainController', function($scope, $rootScope) {
     $scope.mainData = {
-        logs: 'a'
+        logs: 'false'
     };
 
 
