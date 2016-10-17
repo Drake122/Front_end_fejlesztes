@@ -149,7 +149,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     ///EDIT USER BUTTON ////// feltölti az összes usert
-    $scope.statuses = [];
+    //$scope.statuses = [];
 
     $http.get('http://localhost:8080/user/allUser')
         .success(function (data) {
@@ -157,17 +157,17 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             //  console.log( $scope.statuses);
             $scope.allUsers = data;
             angular.forEach($scope.allUsers, function (u) {
-                var value = u.iduser;
+                //var value = u.iduser;
                 var text = u.name;
-                var user = {value: value, text: text};
-                $scope.statuses.push(user);
+              //  var user = {value: value, text: text};
+                //$scope.statuses.push(user);
                 $scope.allUsersInCheckbox.push(text);
             })
 
         });
     ////CheckList-Model/////
- console.log("statuses:");
-    console.log($scope.statuses);
+ //console.log("statuses:");
+ //   console.log($scope.statuses);
     ///EDIT USER BUTTON //////
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
@@ -208,40 +208,35 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     ///EDIT USER BUTTON //////
-    $scope.user = {status: []};
-    $scope.editedUsers = [];
+   $scope.user = {status: []};
+    //$scope.editedUsers = [];
     $scope.getCurrentSelection = function () {
-        $scope.user = {status: []};
-        $scope.editedUsers = [];
+        //$scope.user = {status: []};
+        //$scope.editedUsers = [];
 
-        var values = [];
+        //var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
       //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
-        $scope.printSelection = values.toString();
+      //  $scope.printSelection = values.toString();
 
         //////Check-List-Model/////////////
         $scope.user.chekedUsers=currentSelection[0].row.entity.userCollection;
-        console.log(" $scope.user.chekedUsers:----");
-        console.log( $scope.user.chekedUsers);
-        console.log(" $scope.user.chekedUsers:  ");
-        console.log( $scope.user.chekedUsers);
-        console.log(" $scope.chekedUsers:  ");
-        console.log( $scope.chekedUsers);
+
         //////Check-List-Model/////////////
 
-        angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
-            values.push(val);
-        });
-        console.log("values: ");
-        console.log(values);
-        angular.forEach( $scope.statuses,function(us){
-            for(var i=0; i<values.length; i++){
-                if(angular.equals(values[i],us.text)){
-                    $scope.user.status.push(us.value);
-                }
-            }
-
-        })
+        //angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
+        //    values.push(val);
+        //});
+        //console.log("values: ");
+        //console.log(values);
+        //angular.forEach( $scope.statuses,function(us){
+        //    for(var i=0; i<values.length; i++){
+        //        if(angular.equals(values[i],us.text)){
+        //            $scope.user.status.push(us.value);
+        //        }
+        //    }
+        //
+        //})
    //
    //console.log("user-statusbetölti a getcurrentSelectiont: ");
    //     console.log($scope.user.status);
