@@ -12,22 +12,13 @@ app.controller('MainCtrl', ['$scope', '$http', '$log','uiGridConstants', functio
     };
 //DELETE + RESET  ///////////////
 
-     /*   $scope.swapData = function() {
-            if ($scope.gridOpts.data === data1) {
-                $scope.gridOpts.data = data2;
-                $scope.gridOpts.columnDefs = columnDefs2;
-            }
-            else {
-                $scope.gridOpts.data = data1;
-                $scope.gridOpts.columnDefs = columnDefs1;
-            }
-        };*/
 
     $scope.addData = function() {
         var n = $scope.gridOptions.data.length + 1;
         $scope.gridOptions.data.push({
-            "idtask": "Id" + n,
-            "description": "Description" + n,
+            "idtask":  n,
+            "label": "label",
+            "description": "Description",
             "status": "Status",
             "startTime": "startTime",
             "finishTime": "finishTime",
@@ -37,22 +28,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$log','uiGridConstants', functio
         });
     };
 
-   /* $scope.removeFirstRow = function() {
-        //if($scope.gridOpts.data.length > 0){
-        $scope.gridOpts.data.splice(0,1);
-        //}
-    };*/
 
-    $scope.reset = function () {
-        data1 = angular.copy(origdata1);
-        data2 = angular.copy(origdata2);
-
-        $scope.gridOptions.data = data1;
-        $scope.gridOptions.columnDefs = columnDefs1;
-    };
 
     var columnDefs1 = [
         { name: 'idtask' },
+        { name: 'label' },
         { name: 'description' },
         { name: 'status' },
         { name: 'startTime' },
@@ -61,13 +41,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log','uiGridConstants', functio
         { name: 'responsible' },
         { name: 'userCollection' }
     ];
-    var data2 =$scope.gridOptions.data;
 
     var data1 = $scope.gridOptions.data;
-
-    var origdata1 = angular.copy(data1);
-
-    var origdata2 = angular.copy(data2);
 
     $scope.gridOptions = {
         columnDefs: columnDefs1,
@@ -79,11 +54,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$log','uiGridConstants', functio
 //DELETE + RESET////////////
 
     $scope.gridOptions.columnDefs = [
-        { name: 'idtask',displayName: 'Id', enableCellEdit: false, width: '2%' },
+        { name: 'idtask',displayName: 'Id', enableCellEdit: false, width: '4%' },
         { name: 'label', displayName: 'Label (editable)',headerCellClass: $scope.highlightFilteredHeader, width: '5%' },
         { name: 'description',displayName:'Description (editable)', width: '30%' },
         { name: 'status', displayName: 'Status', type:'number',width:'10%'},
-        { name: 'startTime', displayName: 'startTime' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%' },
+        { name: 'startTime', displayName: 'startTime' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%' },
         { name: 'finishTime', displayName: 'finishTime' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%' },
         { name: 'priority', displayName: 'Priority', type:'number',width:'6%'},
         { name: 'responsible', displayName: 'responsible', type:'number',width:'7%'},
