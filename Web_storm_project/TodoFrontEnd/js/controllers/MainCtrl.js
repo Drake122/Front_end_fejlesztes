@@ -16,7 +16,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         enableCellEditOnFocus: true,
 
         columnDefs: [
-            {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '2%'},
+            {name: 'idtask', displayName: 'Id (not focusable)', allowCellFocus : false, enableCellEditOnFocus:false, enableCellEdit: false, width: '2%'},
             {name: 'label', displayName: 'Label (editable)', width: '5%'},
             {name: 'description', displayName: 'Description (editable)', width: '30%'},
             {name: 'status', displayName: 'Status', type: 'number', width: '2%'},
@@ -24,7 +24,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '16%'},
             {name: 'priority', displayName: 'Priority', type: 'number', width: '2%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection',  displayName: 'Users', type: 'object',  enableCellEdit: false, width: '20%'
+            {name: 'userCollection',  displayName: 'Users', type: 'object', enableCellEditOnFocus:false,  enableCellEdit: false, width: '20%'
                }]
     };
 
@@ -107,6 +107,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             console.log($scope.mainData.logs);
             //TODO replace {id}
             var jsonData = updateTask(rowEntity, $scope, $http);
+            $scope.$apply();
             // $scope.gridApi.grid.refresh();
 
 
@@ -143,7 +144,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
 ////CheckList-Model/////
- $scope.allUsersInCheckbox=[];
+ $scope.users=[];
 
     ////CheckList-Model/////
 
@@ -157,17 +158,17 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             //  console.log( $scope.statuses);
             $scope.allUsers = data;
             angular.forEach($scope.allUsers, function (u) {
-                //var value = u.iduser;
-                var text = u.name;
-              //  var user = {value: value, text: text};
-                //$scope.statuses.push(user);
-                $scope.allUsersInCheckbox.push(text);
+                var id = u.iduser;
+                var name = u.name;
+              var user = {id: id, name: name};
+                $scope.users.push(user);
             })
 
         });
     ////CheckList-Model/////
- //console.log("statuses:");
- //   console.log($scope.statuses);
+
+
+
     ///EDIT USER BUTTON //////
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
@@ -207,36 +208,41 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
 
-    ///EDIT USER BUTTON //////
-   $scope.user = {status: []};
-    //$scope.editedUsers = [];
-    $scope.getCurrentSelection = function () {
-        //$scope.user = {status: []};
-        //$scope.editedUsers = [];
 
-        //var values = [];
-        var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
+    ///EDIT USER BUTTON //////
+
+
+   $scope.user = {status: []};
+
+    $scope.getCurrentSelection = function () {
+
+        $scope.uncheckAll();
+        var values = [];
+        var currentSelection =$scope.gridApi.cellNav.getCurrentSelection();
       //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
       //  $scope.printSelection = values.toString();
 
         //////Check-List-Model/////////////
-        $scope.user.chekedUsers=currentSelection[0].row.entity.userCollection;
+       // $scope.user.chekedUsers=angular.copy(currentSelection[0].row.entity.userCollection);
 
         //////Check-List-Model/////////////
 
-        //angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
-        //    values.push(val);
-        //});
+        angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
+            values.push(val);
+        });
         //console.log("values: ");
         //console.log(values);
-        //angular.forEach( $scope.statuses,function(us){
-        //    for(var i=0; i<values.length; i++){
-        //        if(angular.equals(values[i],us.text)){
-        //            $scope.user.status.push(us.value);
-        //        }
-        //    }
-        //
-        //})
+        angular.forEach( $scope.users,function(us){
+            for(var i=0; i<values.length; i++){
+                if(angular.equals(values[i],us.name)){
+                    $scope.selectedUsers.push(us);
+                }
+            }
+
+        })
+        //console.log("  $scope.selectedUsers:");
+        //console.log( $scope.selectedUsers);
+
    //
    //console.log("user-statusbetölti a getcurrentSelectiont: ");
    //     console.log($scope.user.status);
@@ -244,8 +250,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     ////Hide-Show//////
-    $scope.firstName = "John",
-        $scope.lastName = "Doe"
+
     $scope.myVar =true;
     $scope.toggle = function() {
         $scope.myVar = !$scope.myVar;
@@ -253,81 +258,48 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     };
 
+
+
     ////Hide-Show//////
 
     ////Check-List-model//////
-  //  $scope.roles =$scope.allUsersInCheckbox;
-    $scope.getChekedUsers = function() {
-        return $scope.user.chekedUsers;
+    $scope.selectedUsers = [];
+    $scope.compareFn = function(obj1, obj2){
+        return obj1.id === obj2.id;
     };
 
-    $scope.check = function(value, checked) {
-
-        var idx = $scope.user.chekedUsers.indexOf(value);
-        if (idx >= 0 && !checked) {
-            $scope.user.chekedUsers.splice(idx, 1);
-        }
-        if (idx < 0 && checked) {
-            $scope.user.chekedUsers.push(value);
-        }
-
-
+    $scope.uncheckAll = function() {
+        $scope.selectedUsers.splice(0, $scope.selectedUsers.length);
     };
-    //$scope.user = {
-    //    roles: ['user']
-    //};
+
+    $scope.saveSelectedUsers =function(){
+        //console.log(" SAVE:  $scope.selectedUsers:");
+        //console.log( $scope.selectedUsers);
+        //console.log(" SAVE előtt:  $scope.gridApi.cellNav.getCurrentSelection().row.entity.userCollection:");
+        //console.log($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection);
+        var tempSelectedUsers =[];
+        angular.forEach( $scope.selectedUsers,function(us){
+            var name = us.name;
+            tempSelectedUsers.push(name);
+        });
+        //console.log("tempSelectedUsers:");
+        //console.log(tempSelectedUsers);
+        $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection=tempSelectedUsers;
+        //console.log(" SAVE utan:  $scope.gridApi.cellNav.getCurrentSelection().row.entity.userCollection:");
+        //console.log($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection);
+        var jsonData = updateTask($scope.gridApi.cellNav.getCurrentSelection()[0].row.entity, $scope, $http);
+
+        $scope.myVar = !$scope.myVar;
+    };
+
+    $scope.canceleSelectedUsers = function(){
+        $scope.myVar = !$scope.myVar;
+    };
+
 
     ////Check-List-model//////
 
 
-    /* $scope.setCurrentSelectonUsers=function(){
-        if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
-            var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
-            currentSelection[0].row.entity.userCollection.clear();
-
-        }
-        var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
-        console.log("currentSelection: "+currentSelection[0]);
-
-    }*/
- //  var selectedUsersIds = [];
-
-////Show Status///////////
-//    $scope.showStatus = function () {
-//        var selected = [];
-//
-//        $scope.editedUsers = [];
-//      //  currentSelection[0].row.entity.userCollection.clear();
-//       angular.forEach($scope.statuses, function (s) {
-//           if ($scope.user.status.indexOf(s.value) >= 0) {
-//                selected.push(s.text);
-//                selectedUsersIds.push(s.value);
-
-       //     }
-       //});
-        //console.log("selected: ");
-        //console.log(selected);
-        //$scope.editedUsers = selected;
-      //  $scope.setCurrentSelectonUsers();
-      //  console.log("editedUUsers");
-      //  console.log($scope.editedUsers);
-      //  console.log("selected");
-      //  console.log(selected);
-      //  console.log("$scope.user.status:");
-      //  console.log($scope.user.status);
-      //  console.log("newKlick:");
-      //  console.log(newClick);
-    //    var tempEditedUsers = $scope.editedUsers;
-    //    if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length>0 /*&& (newClick="0") */){
-    //        $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= tempEditedUsers;
-    //
-    //    }
-    //     tempEditedUsers=[];
-    //
-    //    return selected.length ? selected.join(', ') : 'Not set';
-    //
-    //};
-////Show Status///////////
 
     ///EDIT USER BUTTON //////
 
@@ -361,7 +333,7 @@ function updateTask(rowEntity, $scope, $http) {
     // var jsonData = angular.toJson(rowEntity);
     //console.log("rowEntity utana: ");
     //console.log(rowEntity);
-    $scope.$apply();
+
     $http({
         method: 'PUT',
         url: urlWithId,
@@ -387,7 +359,9 @@ function convertUserNamesToUserIdsInuserCollection(rowEntity, $scope) {
     angular.forEach($scope.allUsers, function (user) {
         var value = user.iduser;
         var text = user.name;
-
+        if(angular.equals(jsonData.responsible,text)){
+            jsonData.responsible=value;
+        }
         for (var i = 0; i < jsonData.userCollection.length; i++) {
             if (angular.equals(text, jsonData.userCollection[i])) {
                 jsonData.userCollection.splice(i, 1, value);
@@ -416,6 +390,19 @@ function convertUserIdsToUserNamesInUserCollection(rowEntity, $scope){
 
 }
 
+function responsibleIdToName($scope, row) {
+    angular.forEach($scope.allUsers, function (user) {
+        var value = user.iduser;
+        var text = user.name;
+    if(angular.equals(row.responsible,value)){
+        row.responsible=text;
+    }
+
+
+    });
+
+
+}
 function loadAllTask($http, $scope) {
     $http.get('http://localhost:8080/task/allTask')
         .success(function (data) {
@@ -423,6 +410,7 @@ function loadAllTask($http, $scope) {
                 row.startTime = $scope.formatDate(row.startTime);
                 row.finishTime = $scope.formatDate(row.finishTime);
                 UsersIdsArrayToNamesArray($scope, row);
+                responsibleIdToName($scope, row);
             });
             $scope.gridOptions.data = data;
             console.log("gridOptionData:");
