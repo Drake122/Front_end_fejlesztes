@@ -5,40 +5,28 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
    // console.log("MainVtrl:$scope.parentData.message:" +$scope.parentData.message);
  //   console.log("MainCtrl data.message: "+ LoginController.parentData.message);
 
-/////////Search Filtering ///////////
-//    $scope.highlightFilteredHeader = function( row, rowRenderIndex, col, colRenderIndex ) {
-//        if( col.filters[0].term ){
-//            return 'header-filtered';
-//        } else {
-//            return '';
-//        }
-//    };
-//
-//    $scope.toggleFiltering = function(){
-//        $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
-//        $scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
-//    };
 
-    /////////Search Filtering ///////////
     $scope.gridOptions = {
         enableFiltering: true,
         modifierKeysToMultiSelectCells: true,
         showGridFooter: true,
         enableSorting: true,
         enableCellEditOnFocus: true,
-        columnDefs: [
-            {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '4%'},
-            {name: 'label', displayName: 'Label (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '5%'},
-            {name: 'description', displayName: 'Description (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '30%'},
-            {name: 'status', displayName: 'Status', type: 'number', width: '10%'},
-            {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%'},
-            {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%'},
-            {name: 'priority', displayName: 'Priority', type: 'number', width: '6%'},
-            {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', /*enableCellEdit: false,*/ width: '20%'}
-        ]    };
+        flatEntityAccess: true,
+        
+        fastWatch: true
 
-//Add Row  ///////////////
+    };
+///SEARCH TOGGLE FLAT ACCESS///////////
+
+    $scope.toggleFlat = function() {
+        $scope.gridOptions.flatEntityAccess = !$scope.gridOptions.flatEntityAccess;
+    };
+
+    ///SEARCH TOGGLE FLAT ACCESS////////////
+
+//ADD ROW ///////////////
+
 
     $scope.addData = function () {
         var n = $scope.gridOptions.data.length + 1;
@@ -54,6 +42,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             "userCollection": "Users"
         });
     };
+
 
     var columnDefs1 = [
         {name: 'idtask'},
@@ -75,8 +64,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     };
 
 
-//Add Row////////////
+///////////////ADD ROW////////////
 
+    $scope.gridOptions.columnDefs = [
+        {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '4%'},
+        {name: 'label', displayName: 'Label (editable)', width: '5%'},
+        {name: 'description', displayName: 'Description (editable)', width: '30%'},
+        {name: 'status', displayName: 'Status', type: 'number', width: '10%'},
+        {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%'},
+        {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%'},
+        {name: 'priority', displayName: 'Priority', type: 'number', width: '6%'},
+        {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
+        {name: 'userCollection', displayName: 'Users', type: 'object', /*enableCellEdit: false,*/ width: '20%'}
+    ];
 
     $scope.msg = {};
     //$scope.editedUsers = [];
@@ -136,6 +136,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     if($scope.mainData.logs="false"){
         $http.get('http://localhost:8080/task/allTask')
             .success(function (data) {
+
                 $scope.gridOptions.data = data;
             });
     }else{
@@ -211,32 +212,25 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     // Keresés///////////////////
-    $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
-        if (col.filters[0].term) {
-            return 'header-filtered';
-        } else {
-            return '';
-        }
-    };
-
-    $scope.toggleFiltering = function () {
-        $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
-        $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-    };
-
+    //$scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
+    //    if (col.filters[0].term) {
+    //        return 'header-filtered';
+    //    } else {
+    //        return '';
+    //    }
+    //};
+    //
+    //$scope.toggleFiltering = function () {
+    //    $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+    //    $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+    //};
+    //
+    //return function (input) {
+    //    if (!input) {
+    //        return '';
+    //    } else {
+    //        return genderHash[input];
+    //    }
+    //};
 
 }]);
-app.filter('mapGender', function() {
-    var genderHash = {
-        1: 'male',
-        2: 'female'
-    };
-
-    return function (input) {
-        if (!input) {
-            return '';
-        } else {
-            return genderHash[input];
-        }
-    };
-});;
