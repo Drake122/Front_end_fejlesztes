@@ -14,13 +14,13 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         enableCellEditOnFocus: true,
 
         columnDefs: [
-            {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '4%'},
+            {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '2%'},
             {name: 'label', displayName: 'Label (editable)', width: '5%'},
             {name: 'description', displayName: 'Description (editable)', width: '30%'},
-            {name: 'status', displayName: 'Status', type: 'number', width: '10%'},
-            {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%'},
-            {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%'},
-            {name: 'priority', displayName: 'Priority', type: 'number', width: '6%'},
+            {name: 'status', displayName: 'Status', type: 'number', width: '2%'},
+            {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '16%'},
+            {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '16%'},
+            {name: 'priority', displayName: 'Priority', type: 'number', width: '2%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
             {name: 'userCollection', displayName: 'Users(editable)', type: 'object', enableCellEdit: true, width: '20%'}]
     };
@@ -31,7 +31,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     $scope.addData = function () {
         var n = $scope.gridOptions.data.length + 1;
-        $scope.gridOptions.data.push({
+
+            var dataAdd=
+            {
             "idtask": n,
             "label": "label",
             "description": "Description",
@@ -41,21 +43,26 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             "priority": 1,
             "responsible": "",
             "userCollection": []
-        });
+        };
 
-        //$http({
-        //    method : 'PUT',
-        //    url: urlWithId,
-        //    headers: {
-        //        'Content-Type': 'application/json; charset=utf-8'
-        //    },
-        //    data: jsonData
-        //
-        //}).then(function successCallback(response) {
-        //    console.log(response);
-        //}, function errorCallback(response) {
-        //    console.error(response);
-        //});
+        $scope.gridOptions.data.push(dataAdd);
+
+        var jsonDataAdd=angular.toJson(dataAdd);
+        console.log("jsonDataAdd: ");
+        console.log(jsonDataAdd);
+        $http({
+            method : 'PUT',
+            url:'http://localhost:8080/task/newTask',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            data: jsonDataAdd
+
+        }).then(function successCallback(response) {
+            console.log(response);
+        }, function errorCallback(response) {
+            console.error(response);
+        });
     };
 
 
