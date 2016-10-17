@@ -77,17 +77,24 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
              };*/
 
             console.log(rowEntity);
+            //TODO replace {id}
+            var idTaskTemp = rowEntity.idtask;
+            var urlWithId = 'http://localhost:8080/task/updateTaskById/'+idTaskTemp;
+            var jsonData = angular.toJson(rowEntity);
             $scope.$apply();
-            $http.put({
-                url: 'http://localhost:8080/task//updateTaskById/{id}',
-                data: {
-                    id: rowEntity.idtask,
-                    data: rowEntity
-                },
+            $http({
+                method : 'PUT',
+                url: urlWithId,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
-                }
+                },
+                data: jsonData
+            }).then(function successCallback(response) {
+                console.log(response);
+            }, function errorCallback(response) {
+                console.error(response);
             });
+            ;
 
         });
     };
@@ -150,5 +157,17 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants', functi
         }
     };
 
+    $scope.toggleFiltering = function () {
+        $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
+        $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+    };
+
+    return function (input) {
+        if (!input) {
+            return '';
+        } else {
+            return genderHash[input];
+        }
+    };
 
 }]);
