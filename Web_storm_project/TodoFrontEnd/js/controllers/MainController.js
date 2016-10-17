@@ -19,47 +19,46 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
     $scope.msg = {};
 
     $scope.gridOptions.onRegisterApi = function(gridApi){
-        //set gridApi on scope
         $scope.gridApi = gridApi;
-
         gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
-            console.log(rowEntity);
-           // console.log($scope.statuses);
             $scope.$apply();
         });
     };
 
     $http.get('http://localhost:8080/task/allTask')
         .success(function(data) {
-
             $scope.gridOptions.data = data;
         });
+
     $scope.info = {};
 
+    $scope.user = {status: []};
+
     $scope.getCurrentSelection = function() {
+        $scope.user = {status: []};
         var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
-        for (var i = 0; i < currentSelection.length; i++) {
-            values.push(currentSelection[i].row.entity[currentSelection[i].col.name])
-        }
+            values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
         $scope.printSelection = values.toString();
+        angular.forEach(currentSelection[0].row.entity.userCollection, function (val,key) {
+            $scope.user.status.push(val);
+        })
     };
-    $scope.user = {
-        status: [2, 3]
-    };
+
+
+    $scope.statuses = [];
 
     $http.get('http://localhost:8080/user/allUser')
         .success(function(data) {
-            console.log(data);
-
+          //  console.log( $scope.statuses);
+        $scope.allUsers=data;
+            angular.forEach($scope.allUsers, function (u) {
+                var value =u.iduser;     var text = u.name;
+                var user =  {value:value, text:text};
+               $scope.statuses.push( user);
+            })
         });
-
-    $scope.statuses = [
-        {value: 1, text: 'status1'},
-        {value: 2, text: 'status2'},
-        {value: 3, text: 'status3'}
-    ];
 
     $scope.showStatus = function() {
         var selected = [];
@@ -70,7 +69,5 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http, 
         });
         return selected.length ? selected.join(', ') : 'Not set';
     };
-
-
 
 }]);
