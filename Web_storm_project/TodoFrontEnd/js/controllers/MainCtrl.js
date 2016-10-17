@@ -74,21 +74,44 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     $scope.msg = {};
     $scope.editedUsers = [];
-    $scope.gridOptions.onRegisterApi = function (gridApi) {
+    $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
-              if($scope.editedUsers.length>0){
-             rowEntity.userCollection.newValue=$scope.editedUsers;
+            /*  if($scope.editedUsers.length>0){
+            // rowEntity.userCollection.newValue=$scope.editedUsers;
              $scope.editedUsers=[];
-             };
+             };*/
 
             console.log(rowEntity);
             console.log("MainCtrl: $scope.mainData.logs2 : " +$scope.mainData.logs);
             //TODO replace {id}
             var idTaskTemp = rowEntity.idtask;
             var urlWithId = 'http://localhost:8080/task/updateTaskById/'+idTaskTemp;
-            var jsonData = angular.toJson(rowEntity);
+            var jsonDatatemp = angular.toJson(rowEntity);
+            var jsonDatatemp = rowEntity;
+            console.log("jsonDatatemp: ");
+            console.log(jsonDatatemp);
+
+
+            var jsonData=jsonDatatemp;
+           // jsonData.userCollection=[];
+            console.log("jsonData2: "+jsonData);
+          angular.forEach($scope.allUsers, function (user) {
+                var value = user.iduser;
+                var text = user.name;
+
+        for(var i= 0; i<jsonData.userCollection.length; i++){
+            if(angular.equals(text,jsonData.userCollection[i])){
+                jsonData.userCollection.splice(i,1,value);
+            }
+        }
+                var user = {value: value, text: text};
+                $scope.statuses.push(user);
+            });
+            console.log("jsonData: "+jsonData);
+            console.log("jsonData: ");
+            console.log(jsonData);
             $scope.$apply();
             $http({
                 method : 'PUT',
@@ -97,6 +120,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                     'Content-Type': 'application/json; charset=utf-8'
                 },
                 data: jsonData
+
             }).then(function successCallback(response) {
                 console.log(response);
             }, function errorCallback(response) {
@@ -151,28 +175,31 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                 $scope.statuses.push(user);
             })
         });
-    $scope.setCurrentSelectonUsers=function(){
-       /* if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
+    /* $scope.setCurrentSelectonUsers=function(){
+        if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
             var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
             currentSelection[0].row.entity.userCollection.clear();
 
-        }*/
+        }
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
         console.log("currentSelection: "+currentSelection[0]);
 
-    }
+    }*/
+    var selectedUsersIds = [];
     $scope.showStatus = function () {
         var selected = [];
+
         $scope.editedUsers = [];
        // currentSelection[0].row.entity.userCollection.clear();
         angular.forEach($scope.statuses, function (s) {
             if ($scope.user.status.indexOf(s.value) >= 0) {
                 selected.push(s.text);
+                selectedUsersIds.push(s.value);
 
             }
         });
         $scope.editedUsers = selected;
-        $scope.setCurrentSelectonUsers();
+      //  $scope.setCurrentSelectonUsers();
         return selected.length ? selected.join(', ') : 'Not set';
 
     };
