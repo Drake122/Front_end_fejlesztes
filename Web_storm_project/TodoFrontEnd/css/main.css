@@ -53,9 +53,7 @@ body {
 .header-filtered {
     color: blue;
 }
-.editable-checklist label {
-    display: block;
-}
+
 
 .grid {
     width: 1400px;
