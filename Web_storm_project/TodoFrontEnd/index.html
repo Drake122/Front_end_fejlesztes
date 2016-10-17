@@ -101,16 +101,15 @@
                  {{ showStatus() }}
              </a> -->
 
-         <button type="button" class="btn btn-success" ng-click="toggle()">Hide user</button>
+         <button type="button" class="btn btn-success" ng-click="toggle()">Show selected Users</button>
 
          <p ng-hide="myVar">
-             First Name: <input type=text ng-model="firstName"><br>
-             Last Name: <input type=text ng-model="lastName"><br><br>
-             Full Name: {{firstName + " " + lastName}}
-
+        Selected Users :
              <label ng-repeat="role in allUsersInCheckbox">
                  <input type="checkbox" checklist-model="getChekedUsers()" checklist-value="role" ng-change="check(chekedUsers, checked)"> {{role}}
              </label>
+             <button type="button" class="btn btn-success" ng-click="saveSelectedUsers()">Save</button>
+             <button type="button" class="btn btn-success" ng-click="canceleSelectedUsers()">Cancel</button>
          </p>
 
 
