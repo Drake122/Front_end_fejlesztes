@@ -1,4 +1,31 @@
+function updateTask(rowEntity, $scope, $http) {
+    var idTaskTemp = rowEntity.idtask;
+    var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
+    // var jsonDatatemp = angular.toJson(rowEntity);
+    // console.log("rowEntity elotte: ");
+    // console.log(rowEntity);
+    var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
+    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
 
+    // var jsonData = angular.toJson(rowEntity);
+    //console.log("rowEntity utana: ");
+    //console.log(rowEntity);
+    $scope.$apply();
+    $http({
+        method: 'PUT',
+        url: urlWithId,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        data: jsonData
+
+    }).then(function successCallback(response) {
+        console.log(response);
+    }, function errorCallback(response) {
+        console.error(response);
+    });
+    return jsonData;
+}
 app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
     //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
@@ -100,41 +127,12 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
-            /*  if($scope.editedUsers.length>0){
-            // rowEntity.userCollection.newValue=$scope.editedUsers;
-             $scope.editedUsers=[];
-             };*/
 
-            console.log(rowEntity);
-            console.log("MainCtrl: $scope.mainData.logs2 : " +$scope.mainData.logs);
+            console.log("MainCtrl: $scope.mainData.logs2 : " )
+            console.log($scope.mainData.logs);
             //TODO replace {id}
-            var idTaskTemp = rowEntity.idtask;
-            var urlWithId = 'http://localhost:8080/task/updateTaskById/'+idTaskTemp;
-           // var jsonDatatemp = angular.toJson(rowEntity);
-            console.log("rowEntity elotte: ");
-            console.log(rowEntity);
-            var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
-            //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
-
-            // var jsonData = angular.toJson(rowEntity);
-            console.log("rowEntity utana: ");
-            console.log(rowEntity);
-            $scope.$apply();
-            $http({
-                method : 'PUT',
-                url: urlWithId,
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                data: jsonData
-
-            }).then(function successCallback(response) {
-                console.log(response);
-            }, function errorCallback(response) {
-                console.error(response);
-            });
-
-           // $scope.gridApi.grid.refresh();
+            var jsonData = updateTask(rowEntity, $scope, $http);
+            // $scope.gridApi.grid.refresh();
 
 
          /*   angular.forEach($scope.allUsers, function (user) {
@@ -153,6 +151,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             console.log("ujratoltve!!");
             console.log(jsonData);
           //  convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
+            $scope.user = {status: []};
+            $scope.editedUsers = [];
         });
        
 
@@ -165,7 +165,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         return dateOut;
     };
 
-    ///EDIT USER BUTTON //////
+    ///EDIT USER BUTTON ////// feltölti az összes usert
     $scope.statuses = [];
 
     $http.get('http://localhost:8080/user/allUser')
@@ -187,26 +187,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
     var userId= $scope.mainData.logs;
-    if($scope.mainData.logs="false"){
-        $http.get('http://localhost:8080/task/allTask')
-            .success(function (data) {
-                data.forEach( function addDates( row, index ){
-                    row.startTime = $scope.formatDate(row.startTime);
-                    row.finishTime = $scope.formatDate(row.finishTime);
-                    UsersIdsArrayToNamesArray($scope, row);
-                });
-                $scope.gridOptions.data = data;
-                console.log("gridOptionData:");
-                console.log( $scope.gridOptions.data );
-    })
+    if(userId="false"){
+        loadAllTask($http, $scope);
     }else{
-
-    $http.get('http://localhost:8080/user//findAllTaskByUserId/'+userId)
-        .success(function (data) {
-            $scope.gridOptions.data = data;
-
-        });
-       // $window.location.reload();
+        loadAllTaskByUserId($http, userId, $scope);
+        // $window.location.reload();
         console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
     }
 
@@ -234,12 +219,19 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     //Single filter/////
 
-
+    var newClick="0";
     ///EDIT USER BUTTON //////
     $scope.user = {status: []};
-
+    $scope.editedUsers = [];
     $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
         $scope.user = {status: []};
+        $scope.editedUsers = [];
+        //if(newClick="0"){
+        //    newClick="1";
+        //}else{
+        //    newClick="0";
+        //}
+       // newClick = (newClick = "0") ? "1" : "0";  //ez miért nem jó
         var values = [];
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
       //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
@@ -258,7 +250,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
         })
 
-   console.log("user-status: ");
+   console.log("user-statusbetölti a getcurrentSelectiont: ");
         console.log($scope.user.status);
     };
 
@@ -291,14 +283,23 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         //console.log(selected);
         $scope.editedUsers = selected;
       //  $scope.setCurrentSelectonUsers();
-        console.log("editedUUsers");
-        console.log($scope.editedUsers);
-        if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length!=0){
-            $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= $scope.editedUsers;
+      //  console.log("editedUUsers");
+      //  console.log($scope.editedUsers);
+      //  console.log("selected");
+      //  console.log(selected);
+      //  console.log("$scope.user.status:");
+      //  console.log($scope.user.status);
+      //  console.log("newKlick:");
+      //  console.log(newClick);
+        var tempEditedUsers = $scope.editedUsers;
+        if($scope.gridApi.cellNav.getCurrentSelection()[0]&& selected.length>0 /*&& (newClick="0") */){
+            $scope.gridApi.cellNav.getCurrentSelection()[0].row.entity.userCollection= tempEditedUsers;
+
         }
+         tempEditedUsers=[];
 
         return selected.length ? selected.join(', ') : 'Not set';
-
+        console.log("visszairva  !");
     };
 
 
@@ -357,4 +358,26 @@ function convertUserIdsToUserNamesInUserCollection(rowEntity, $scope){
         //$scope.statuses.push(user);
     });
 
+}
+
+function loadAllTask($http, $scope) {
+    $http.get('http://localhost:8080/task/allTask')
+        .success(function (data) {
+            data.forEach(function addDates(row, index) {
+                row.startTime = $scope.formatDate(row.startTime);
+                row.finishTime = $scope.formatDate(row.finishTime);
+                UsersIdsArrayToNamesArray($scope, row);
+            });
+            $scope.gridOptions.data = data;
+            console.log("gridOptionData:");
+            console.log($scope.gridOptions.data);
+        })
+}
+
+function loadAllTaskByUserId($http, userId, $scope) {
+    $http.get('http://localhost:8080/user//findAllTaskByUserId/' + userId)
+        .success(function (data) {
+            $scope.gridOptions.data = data;
+
+        });
 }

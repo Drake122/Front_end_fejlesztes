@@ -22,7 +22,7 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
    // console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
     console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
 
-    $scope.loginName=" kedves ";
+    $scope.loginName=" dear ";
 
     $scope.login = function () {
         console.log("usename: "+ $scope.username);
@@ -65,4 +65,8 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
 
     }])*/
 
+    $scope.logout = function(){
+
+        Scope.goodBy= "Good By "+$scope.loginName+" !";
+    }
 }]);
