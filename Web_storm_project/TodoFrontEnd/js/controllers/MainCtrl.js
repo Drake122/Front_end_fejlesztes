@@ -257,7 +257,10 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $scope.lastName = "Doe"
     $scope.myVar =true;
     $scope.toggle = function() {
-        $scope.myVar = !$scope.myVar;};
+        $scope.myVar = !$scope.myVar;
+        $scope.getCurrentSelection();
+
+    };
 
     ////Hide-Show//////
 
@@ -282,7 +285,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     ////Check-List-model//////
 
-    
+
     /* $scope.setCurrentSelectonUsers=function(){
         if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
             var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
