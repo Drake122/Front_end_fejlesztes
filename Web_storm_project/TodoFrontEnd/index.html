@@ -26,7 +26,10 @@
     <link rel="stylesheet" href="node_modules/angular-xeditable/dist/css/xeditable.css"/>
     <script src="js/controllers/LoginController.js"></script>
     <script src="node_modules/angular-xeditable/dist/js/xeditable.js"></script>
-
+    <script src="js/controllers/RegisterCtrl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>
+    <link rel="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+    <!--<script src="https://fonts.googleapis.com/icon?family=Material+Icons"></script>-->
     <style>
         .ng-hide {
 
@@ -68,15 +71,12 @@
     <div class="row content">
         <div   ng-controller="LoginController" class="col-sm-3 sidenav">
             <h1>Welcome{{loginName}}</h1>
+
             <!--<p ng-hide="hideLogin">-->
             <div ng-hide="hideLogin" class="ng-hide">
-           Login
-
-
-
-
+                <h2>{{regSuccess}}</h2>
+           <h1>Login</h1>
                 <form role="form">
-
                     <div class="form-group">
                         <label>Name:</label>
                         <input type="text" class="form-control" ng-model="username">
@@ -85,23 +85,46 @@
                      <label>Password:</label>
                      <input type="password" class="form-control" ng-model="password" placeholder="Enter password">
                       </div>
-
                     <button type="submit" class="btn btn-default"  ng-click="login()">Login</button>
-                <button class="btn btn-default"  ng-click="logout()">Logout</button>
 
-                <!--<h1>{{usr}}</h1>-->
             </form>
         </div>
-            <!--</p>-->
-
-
+            <div ng-hide="logoutHide"  class="ng-hide">
+                <button class="btn btn-default"  ng-click="logout()">Logout</button>
+            </div>
             <div ng-hide="regHide"  class="ng-hide">
               <h2>  Registration!</h2>
+                <!--<form name="myForm">-->
+                    <!--<input type="email" name="myInput" ng-model="myInput">-->
+                <!--</form>-->
+                <!--<p>The input's valid state is:</p>-->
+                <!--<h1>{{myForm.myInput.$valid}}</h1>-->
+                <div  ng-controller="RegisterCtrl">
+                    <form role="form">
 
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" class="form-control" ng-model="username" placeholder="Enter Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="text" class="form-control" ng-model="email" placeholder="Your Email address">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" class="form-control" ng-model="password" placeholder="Enter password">
+                        </div>
 
+                        <button type="submit" class="btn btn-default"  ng-click="reg()">Registration</button>
+                        <button class="btn btn-default"  ng-click="cancel()">Cancel</button>
+
+                    </form>
 
             </div>
-            <button type="button" class="btn btn-success" ng-click="toggle()">Registration</button>
+                </div>
+            <div ng-hide="regButtonHide" class="ng-hide">
+                 <button type="button" class="btn btn-success" ng-click="toggle()">Registration</button>
+             </div>
         </div>
 
 

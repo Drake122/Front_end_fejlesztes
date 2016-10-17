@@ -21,7 +21,7 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
 
    // console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
     console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
-
+    $scope.regSuccess="";
     $scope.loginName=" dear ";
 
     $scope.login = function () {
@@ -46,37 +46,46 @@ app.controller('LoginController', ['$scope', '$http', function ($scope, $http){
 
         }).then(function successCallback(response) {
             console.log(response.data.valasz);
-            if(response.data.valasz!="false"){
+            $scope.mainData.logs=response.data.valasz;
+            if(response.data.valasz > 0){
                 console.log(response.data.valasz);
                 $scope.loginName+=$scope.username;
-                $scope.mainData.logs=response.data.valasz;
+
 
                 console.log("LoginController+  $scope.mainData.logs"+ $scope.mainData.logs);
               //  $window.location.reload();
-
+        $scope.toggeLogin();
             }
         }, function errorCallback(response) {
             console.error(response);
         });
 
+      
     };
   /*  app.controller('logged'['$scope', '$rootscope', function($scope, $rootscope){
         $rootscope.showBanner= false;
 
     }])*/
+    $scope.regButtonHide=false;
     $scope.regHide=true;
     $scope.hideLogin =false;
+    $scope.logoutHide=true;
     $scope.toggle = function() {
         $scope.hideLogin = !$scope.hideLogin;
         $scope.regHide = !$scope.regHide;
-
+    $scope.regButtonHide = !$scope.regButtonHide;
 
     };
-
+    $scope.toggeLogin = function(){
+        $scope.hideLogin = !$scope.hideLogin;
+        $scope.logoutHide = ! $scope.logoutHide;
+        $scope.regButtonHide = ! $scope.regButtonHide;
+    }
 
 
     $scope.logout = function(){
 
-        Scope.goodBy= "Good By "+$scope.loginName+" !";
+        $scope.toggeLogin();
+        $scope.mainData.logs=-1;
     }
 }]);
