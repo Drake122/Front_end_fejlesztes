@@ -17,58 +17,37 @@
     <script src="js/controllers/MainController.js"></script>
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet" href="node_modules/angular-xeditable/dist/css/xeditable.css"/>
-    <script src="js/controllers/LoginController.js"></script>
+   <!-- <script src="js/controllers/UserController.js"></script> -->
     <script src="node_modules/angular-xeditable/dist/js/xeditable.js"></script>
 </head>
 <body>
-<div class="wrapper">wrapper
 
 
-    <div id="header">header
+<div ng-controller="MainCtrl">
+    <!--  <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>  -->
+    You can use asterisks to fuzz-match, i.e. use "*z*" as your filter to show any row where that column contains a "z".
+    <br>
+    <br>
+    <strong>Note:</strong> The third column has the filter input disabled, but actually has a filter set in code that requires every columb to have an 'a' in their name.
+    <br>
+    <br>
 
+    <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
 
-    </div>
+    <br>
+    <br>
+   <!-- <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button> -->
+    <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
+    <br>
+    <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
+    <br>
+    <div id="grid1" ui-grid="gridOptions"  ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
+    <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
+        <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
+            {{ showStatus() }}
+        </a>
 
-
-    <div id="container">Container
-
-        <div id="sidebarA" ng-controller="LoginController">Oldalsáv
-            <h1> {{teszt}} </h1>
-
-
-        </div>
-        <div id="contant" ng-controller="MainCtrl">
-            <!--  <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>  -->
-            You can use asterisks to fuzz-match, i.e. use "*z*" as your filter to show any row where that column
-            contains a "z".
-            <br>
-            <br>
-            <strong>Note:</strong> The third column has the filter input disabled, but actually has a filter set in code
-            that requires every columb to have an 'a' in their name.
-            <br>
-            <br>
-
-            <button type="button" id="addData" class="btn btn-success" ng-click="addData()">Add Data</button>
-
-            <br>
-            <br>
-            <!-- <button id='toggleFiltering' ng-click="toggleFiltering()" class="btn btn-success">Toggle Filtering</button> -->
-            <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
-            <br>
-            <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
-            <br>
-
-            <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
-            <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
-            <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
-                {{ showStatus() }}
-            </a>
-
-        </div>
-    </div>
-    <div id="bottom">
-        <p>Designed by Kovács Sándor</p>
-    </div>
 </div>
+
 </body>
 </html>
