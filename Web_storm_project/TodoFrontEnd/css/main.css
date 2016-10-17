@@ -1,4 +1,7 @@
-
+.grid {
+    width: 600px;
+    height: 450px;
+}
 
 .header {
     padding: 15px;

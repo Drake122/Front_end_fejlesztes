@@ -9,16 +9,25 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
     <script src="node_modules/angular-ui-grid/ui-grid.js"></script>
     <script type="text/plain" src="node_modules/angular-ui-grid/ui-grid.min.css"></script>
-    <<link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css" />
+    <link rel="stylesheet" href="node_modules/angular-ui-grid/ui-grid.css" />
     <script src="js/app.js"></script>
     <script src="js/controllers/MainController.js"></script>
+    <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
 
 
 <div ng-controller="MainCtrl">
-    <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>
+   <!--  <div id="grid1" ui-grid="{ data: myData }" class="grid"></div>  -->
 
+    <strong>Data Length:</strong> {{ gridOptions.data.length | number }}
+    <br>
+    <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
+    <br>
+    <div ui-grid="gridOptions" ui-grid-edit class="grid"></div>
+    <br>
+
+    
 
 </div>
 </body>
