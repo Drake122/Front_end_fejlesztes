@@ -94,6 +94,27 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     //$scope.editedUsers = [];
     $scope.gridOptions.onRegisterApi = function (gridApi) {//update task
         $scope.gridApi = gridApi;
+
+        function convertUserNamesToIds(rowEntity) {
+            var jsonDatatemp = rowEntity;
+            console.log("jsonDatatemp: ");
+            console.log(jsonDatatemp);
+            var jsonData = jsonDatatemp;
+            angular.forEach($scope.allUsers, function (user) {
+                var value = user.iduser;
+                var text = user.name;
+
+                for (var i = 0; i < jsonData.userCollection.length; i++) {
+                    if (angular.equals(text, jsonData.userCollection[i])) {
+                        jsonData.userCollection.splice(i, 1, value);
+                    }
+                }
+                //var user = {value: value, text: text};
+                //$scope.statuses.push(user);
+            });
+            return jsonData;
+        }
+
         gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
             /*  if($scope.editedUsers.length>0){
@@ -107,23 +128,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             var idTaskTemp = rowEntity.idtask;
             var urlWithId = 'http://localhost:8080/task/updateTaskById/'+idTaskTemp;
            // var jsonDatatemp = angular.toJson(rowEntity);
-            var jsonDatatemp = rowEntity;
-            console.log("jsonDatatemp: ");
-            console.log(jsonDatatemp);
-            var jsonData=jsonDatatemp;
-          angular.forEach($scope.allUsers, function (user) {
-                var value = user.iduser;
-                var text = user.name;
+            var jsonData = convertUserNamesToIds(rowEntity);
 
-        for(var i= 0; i<jsonData.userCollection.length; i++){
-            if(angular.equals(text,jsonData.userCollection[i])){
-                jsonData.userCollection.splice(i,1,value);
-            }
-        }
-                var user = {value: value, text: text};
-                $scope.statuses.push(user);
-            });
-            console.log("jsonData: "+jsonData);
             console.log("jsonData: ");
             console.log(jsonData);
             $scope.$apply();
@@ -140,7 +146,29 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             }, function errorCallback(response) {
                 console.error(response);
             });
+
+           // $scope.gridApi.grid.refresh();
+
+
+            angular.forEach($scope.allUsers, function (user) {
+                var value = user.iduser;
+                var text = user.name;
+
+                for (var i = 0; i < jsonData.userCollection.length; i++) {
+                    if (angular.equals(text, jsonData.userCollection[i])) {
+                        jsonData.userCollection.splice(i, 1, text);
+                        console.log(i);
+                    }
+                }
+                //var user = {value: value, text: text};
+                //$scope.statuses.push(user);
+            });
+            console.log("ujratoltve!!");
+            console.log(jsonData);
+
         });
+       
+
         //Single filter/////
         $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
         //Single filter/////
@@ -160,6 +188,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                     row.finishTime = $scope.formatDate(row.finishTime);
                 });
                 $scope.gridOptions.data = data;
+                console.log("gridOptionData:");
+                console.log( $scope.gridOptions.data );
             });
     }else{
 
@@ -254,28 +284,6 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     };
 
-
-    // Keresés///////////////////
-   /* $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
-        if (col.filters[0].term) {
-            return 'header-filtered';
-        } else {
-            return '';
-        }
-    };
-
-    $scope.toggleFiltering = function () {
-        $scope.gridOptions.enableFiltering = !$scope.gridOptions.enableFiltering;
-        $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-    };
-
-    return function (input) {
-        if (!input) {
-            return '';
-        } else {
-            return genderHash[input];
-        }
-    };*/
 
 
 
