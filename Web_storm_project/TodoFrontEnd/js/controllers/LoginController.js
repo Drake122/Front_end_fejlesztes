@@ -1,7 +1,9 @@
 /**
  * Created by kovacs.sandor on 2016.08.04..
  */
-app.controller('LoginController', ['productService','$scope', '$http', function ($scope, $http){
+app.controller('LoginController', ['$scope', '$http','myFactoryService', function ($scope, $http,myFactoryService){
+
+    myFactoryService.setData("false");
 
     $scope.loginName=" kedves ";
 
@@ -26,12 +28,10 @@ app.controller('LoginController', ['productService','$scope', '$http', function 
 
         }).then(function successCallback(response) {
             console.log(response.data.valasz);
-            $scope.$emit('login',response.data.valasz);
             if(response.data.valasz=="ok"){
-                console.log(response.data.valasz);
+               // console.log(response.data.valasz);
                 $scope.loginName+=$scope.username;
-                $scope.callToAddToProductList($scope.loginName);
-
+                myFactoryService.setData("minden ok");
 
             }
         }, function errorCallback(response) {
@@ -39,10 +39,6 @@ app.controller('LoginController', ['productService','$scope', '$http', function 
         });
 
     };
-    app.controller('ProductController', function($scope, productService) {
-        $scope.callToAddToProductList = function(currObj){
-            productService.addProduct(currObj);
-        };
-    });
+
 
 }]);

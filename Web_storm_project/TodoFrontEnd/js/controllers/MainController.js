@@ -1,4 +1,9 @@
-app.controller('MainCtrl', ['productService','$scope', '$http', '$log', 'uiGridConstants', function ($scope, $http, uiGridConstants,productService, $log) {
+app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','myFactoryService', function ($scope, $http, uiGridConstants,myFactoryService, $log) {
+
+    $scope.rslt = myFactoryService.getData();
+
+   // console.log("rslt: "+$scope.rslt);
+
     $scope.gridOptions = {
         enableFiltering: true,
         modifierKeysToMultiSelectCells: true,
@@ -105,7 +110,7 @@ app.controller('MainCtrl', ['productService','$scope', '$http', '$log', 'uiGridC
         });
 
 
-
+   
 
     $scope.user = {status: []};
 
@@ -169,16 +174,5 @@ app.controller('MainCtrl', ['productService','$scope', '$http', '$log', 'uiGridC
             return genderHash[input];
         }
     };
-
-    $scope.$on('login',function(response){
-    console.log("response: "+response);
-
-    });
-
-   /* app.controller('CartController', function($scope, productService) {
-        $scope.products = productService.getProducts();
-    });
-
-    console.log($scope.products);*/
 
 }]);
