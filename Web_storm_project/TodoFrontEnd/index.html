@@ -24,7 +24,10 @@
     <br>
     <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
     <br>
-    <div ui-grid="gridOptions" ui-grid-edit class="grid"></div>
+    <div ui-grid="gridOptions" ui-grid-edit  ui-grid-cellNav ui-grid-pinning class="grid"></div>
+    <button type="button" class="btn btn-success" ng-click="getCurrentFocus()">Get Current focused cell</button>  <span ng-bind="currentFocused"></span>
+    <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
+    <input type="text" ng-model="printSelection" placeholder="Edit User" class="printSelection">
     <br>
 
     

@@ -1,22 +1,8 @@
-app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
-    $scope.gridOptions = {  };
+app.controller('MainCtrl', ['$scope', '$http', '$log', function ($scope, $http,  $log) {
+    $scope.gridOptions = {     modifierKeysToMultiSelectCells: true,
+        showGridFooter: true };
 
-    $scope.storeFile = function( gridRow, gridCol, files ) {
-        // ignore all but the first file, it can only select one anyway
-        // set the filename into this column
-        gridRow.entity.filename = files[0].name;
 
-        // read the file and set it into a hidden column, which we may do stuff with later
-        var setFile = function(fileContent){
-            gridRow.entity.file = fileContent.currentTarget.result;
-            // put it on scope so we can display it - you'd probably do something else with it
-            $scope.lastFile = fileContent.currentTarget.result;
-            $scope.$apply();
-        };
-        var reader = new FileReader();
-        reader.onload = setFile;
-        reader.readAsText( files[0] );
-    };
 
     $scope.gridOptions.columnDefs = [
         { name: 'idtask', enableCellEdit: false, width: '5%' },
@@ -27,8 +13,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $ht
         { name: 'finishTime', displayName: 'finishTime' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '20%' },
         { name: 'priority', displayName: 'Priority', type:'number',width:'10%'},
         { name: 'responsible', displayName: 'responsible', type:'number',width:'10%'},
-        { name: 'userCollection', displayName: 'Users', type: 'object', width: '20%' },
-        { name: 'userCollection', displayName: 'Userék', type: 'object', width: '20%' },
+        { name: 'userCollection', displayName: 'Users', type: 'object', enableCellEdit: false, width: '20%' }
+
 
 
 
@@ -39,6 +25,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $ht
     $scope.gridOptions.onRegisterApi = function(gridApi){
         //set gridApi on scope
         $scope.gridApi = gridApi;
+
+
+
         gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
             $scope.msg.lastCellEdited = 'edited row id:' + rowEntity.idtask + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue ;
             console.log(rowEntity);
@@ -52,5 +41,20 @@ app.controller('MainCtrl', ['$scope', '$http', '$timeout', function ($scope, $ht
 
             $scope.gridOptions.data = data;
         });
+    $scope.info = {};
+
+
+
+
+
+    $scope.getCurrentSelection = function() {
+        var values = [];
+        var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
+        for (var i = 0; i < currentSelection.length; i++) {
+            values.push(currentSelection[i].row.entity[currentSelection[i].col.name])
+        }
+        $scope.printSelection = values.toString();
+    };
+
 
 }]);
