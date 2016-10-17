@@ -1,37 +1,11 @@
-function updateTask(rowEntity, $scope, $http) {
-    var idTaskTemp = rowEntity.idtask;
-    var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
-    // var jsonDatatemp = angular.toJson(rowEntity);
-    // console.log("rowEntity elotte: ");
-    // console.log(rowEntity);
-    var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
-    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
 
-    // var jsonData = angular.toJson(rowEntity);
-    //console.log("rowEntity utana: ");
-    //console.log(rowEntity);
-    $scope.$apply();
-    $http({
-        method: 'PUT',
-        url: urlWithId,
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-        },
-        data: jsonData
-
-    }).then(function successCallback(response) {
-        console.log(response);
-    }, function errorCallback(response) {
-        console.error(response);
-    });
-    return jsonData;
-}
 app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
     //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
 
    // console.log("MainVtrl:$scope.parentData.message:" +$scope.parentData.message);
  //   console.log("MainCtrl data.message: "+ LoginController.parentData.message);
+
 
 
     $scope.gridOptions = {
@@ -50,7 +24,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '16%'},
             {name: 'priority', displayName: 'Priority', type: 'number', width: '2%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection', displayName: 'Users', type: 'object', enableCellEdit: false, width: '20%'}]
+            {name: 'userCollection',  displayName: 'Users', type: 'object',  enableCellEdit: false, width: '20%'
+               }]
     };
 
 
@@ -160,10 +135,18 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
         //Single filter/////
     };
+
     $scope.formatDate = function(date){
         var dateOut = new Date(date);
         return dateOut;
     };
+
+
+////CheckList-Model/////
+ $scope.allUsersInCheckbox=[];
+
+    ////CheckList-Model/////
+
 
     ///EDIT USER BUTTON ////// feltölti az összes usert
     $scope.statuses = [];
@@ -178,9 +161,11 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                 var text = u.name;
                 var user = {value: value, text: text};
                 $scope.statuses.push(user);
+                $scope.allUsersInCheckbox.push(text);
             })
 
         });
+    ////CheckList-Model/////
  console.log("statuses:");
     console.log($scope.statuses);
     ///EDIT USER BUTTON //////
@@ -219,13 +204,18 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     //Single filter/////
 
-    var newClick="0";
+
+
+
     ///EDIT USER BUTTON //////
     $scope.user = {status: []};
     $scope.editedUsers = [];
     $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
         $scope.user = {status: []};
         $scope.editedUsers = [];
+
+
+
         //if(newClick="0"){
         //    newClick="1";
         //}else{
@@ -236,6 +226,13 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
       //  values.push(currentSelection[0].row.entity[currentSelection[0].col.name]);
         $scope.printSelection = values.toString();
+
+        //////Check-List-Model/////////////
+        $scope.user.roles=currentSelection[0].row.entity.userCollection;
+        console.log(" $scope.user.roles:----");
+        console.log( $scope.user.roles);
+        //////Check-List-Model/////////////
+
         angular.forEach(currentSelection[0].row.entity.userCollection, function (val, key) {
             values.push(val);
         });
@@ -255,7 +252,37 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     };
 
 
+    ////Hide-Show//////
+    $scope.firstName = "John",
+        $scope.lastName = "Doe"
+    $scope.myVar =true;
+    $scope.toggle = function() {
+        $scope.myVar = !$scope.myVar;};
 
+    ////Hide-Show//////
+
+    ////Check-List-model//////
+    $scope.roles =$scope.allUsersInCheckbox;
+    $scope.getRoles = function() {
+        return $scope.user.roles;
+    };
+
+    $scope.check = function(value, checked) {
+        var idx = $scope.user.roles.indexOf(value);
+        if (idx >= 0 && !checked) {
+            $scope.user.roles.splice(idx, 1);
+        }
+        if (idx < 0 && checked) {
+            $scope.user.roles.push(value);
+        }
+    };
+    //$scope.user = {
+    //    roles: ['user']
+    //};
+
+    ////Check-List-model//////
+
+    
     /* $scope.setCurrentSelectonUsers=function(){
         if($scope.gridApi.cellNav.getCurrentSelection()!=[]){
             var currentSelection = $scope.gridApi.cellNav.getCurrentSelection();
@@ -267,6 +294,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
     }*/
    var selectedUsersIds = [];
+
+////Show Status///////////
     $scope.showStatus = function () {
         var selected = [];
 
@@ -301,7 +330,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         return selected.length ? selected.join(', ') : 'Not set';
 
     };
-
+////Show Status///////////
 
     ///EDIT USER BUTTON //////
 
@@ -321,6 +350,35 @@ function UsersIdsArrayToNamesArray($scope, row) {
 
 
     });
+}
+
+function updateTask(rowEntity, $scope, $http) {
+    var idTaskTemp = rowEntity.idtask;
+    var urlWithId = 'http://localhost:8080/task/updateTaskById/' + idTaskTemp;
+    // var jsonDatatemp = angular.toJson(rowEntity);
+    // console.log("rowEntity elotte: ");
+    // console.log(rowEntity);
+    var jsonData = convertUserNamesToUserIdsInuserCollection(rowEntity, $scope);
+    //convertUserIdsToUserNamesInUserCollection(rowEntity, $scope);
+
+    // var jsonData = angular.toJson(rowEntity);
+    //console.log("rowEntity utana: ");
+    //console.log(rowEntity);
+    $scope.$apply();
+    $http({
+        method: 'PUT',
+        url: urlWithId,
+        headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        data: jsonData
+
+    }).then(function successCallback(response) {
+        console.log(response);
+    }, function errorCallback(response) {
+        console.error(response);
+    });
+    return jsonData;
 }
 
 function convertUserNamesToUserIdsInuserCollection(rowEntity, $scope) {

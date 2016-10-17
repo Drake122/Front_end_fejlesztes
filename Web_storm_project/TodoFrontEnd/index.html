@@ -101,6 +101,17 @@
                     {{ showStatus() }}
                 </a>
 
+            <button ng-click="toggle()">Hide user</button>
+
+            <p ng-hide="myVar">
+                First Name: <input type=text ng-model="firstName"><br>
+                Last Name: <input type=text ng-model="lastName"><br><br>
+                Full Name: {{firstName + " " + lastName}}
+
+                <label ng-repeat="role in roles">
+                    <input type="checkbox" checklist-model="getRoles()" checklist-value="role" ng-change="check(role, checked)"> {{role}}
+                </label>
+            </p>
 
 
 
