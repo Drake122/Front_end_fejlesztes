@@ -101,8 +101,8 @@
                 <br>
                 <strong>Last Cell Edited:</strong> {{msg.lastCellEdited}}
                 <br>
-                <p ng-show="lastChange">Last grouping change: {{ lastChange }}</p>
-                <div id="grid1" ui-grid="gridOptions"  ui-grid-grouping ui-grid-edit ui-grid-cellNav ui-grid-pinning ui-grid-selection class="grid"></div>
+                 <input ng-model='filterValue'/><button ng-click='filter()'>Filter</button>
+                <div id="grid1" ui-grid="gridOptions" ui-grid-edit ui-grid-cellNav ui-grid-pinning class="grid"></div>
                 <button type="button" class="btn btn-success" ng-click="getCurrentSelection()">Edit Users</button>
                 <a href="#" editable-checklist="user.status" e-ng-options="s.value as s.text for s in statuses">
                     {{ showStatus() }}

@@ -1,37 +1,10 @@
-app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window','$interval', 'uiGridGroupingConstants',
-    '$filter', 'stats',
-    function ($scope, $http, uiGridConstants,$window,  $interval, uiGridGroupingConstants, $filter, stats) {
+app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$window', function ($scope, $http, uiGridConstants,$window, $log) {
 
     //console.log("loginController$scope.parentData.message:" +$scope.parentData.message);
 
    // console.log("MainVtrl:$scope.parentData.message:" +$scope.parentData.message);
  //   console.log("MainCtrl data.message: "+ LoginController.parentData.message);
 
-/////  Group beállitó
-
-        var setGroupValues = function( columns, rows ) {
-            columns.forEach( function( column ) {
-                if ( column.grouping && column.grouping.groupPriority > -1 ){
-                    // Put the balance next to all group labels.
-                    column.treeAggregationFn = function( aggregation, fieldValue, numValue, row ) {
-                        if ( typeof(aggregation.value) === 'undefined') {
-                            aggregation.value = 0;
-                        }
-                        aggregation.value = aggregation.value + row.entity.balance;
-                    };
-                    column.customTreeAggregationFinalizerFn = function( aggregation ) {
-                        if ( typeof(aggregation.groupVal) !== 'undefined') {
-                            aggregation.rendered = aggregation.groupVal + ' (' + $filter('currency')(aggregation.value) + ')';
-                        } else {
-                            aggregation.rendered = null;
-                        }
-                    };
-                }
-            });
-            return columns;
-        };
-
-        ///// Group beállitó
 
     $scope.gridOptions = {
         enableFiltering: true,
@@ -39,38 +12,21 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         showGridFooter: true,
         enableSorting: true,
         enableCellEditOnFocus: true,
-        enableGroupHeaderSelection: true,
-        treeRowHeaderAlwaysVisible: false,
-        showColumnFooter: true,
-        treeCustomAggregations: {
-            variance: {label: 'var: ', menuTitle: 'Agg: Var', aggregationFn: stats.aggregator.sumSquareErr, finalizerFn: stats.finalizer.variance },
-            stdev: {label: 'stDev: ', aggregationFn: stats.aggregator.sumSquareErr, finalizerFn: stats.finalizer.stDev},
-            mode: {label: 'mode: ', aggregationFn: stats.aggregator.mode, finalizerFn: stats.finalizer.mode },
-            median: {label: 'median: ', aggregationFn: stats.aggregator.accumulate.numValue, finalizerFn: stats.finalizer.median }
-        },
+
         columnDefs: [
             {name: 'idtask', displayName: 'Id', enableCellEdit: false, width: '4%'},
-            {name: 'label', displayName: 'Label (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '5%'},
-            {name: 'description', displayName: 'Description (editable)', headerCellClass: $scope.highlightFilteredHeader, width: '30%'},
+            {name: 'label', displayName: 'Label (editable)', width: '5%'},
+            {name: 'description', displayName: 'Description (editable)', width: '30%'},
             {name: 'status', displayName: 'Status', type: 'number', width: '10%'},
             {name: 'startTime', displayName: 'startTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '8%'},
             {name: 'finishTime', displayName: 'finishTime', type: 'date', cellFilter: 'date:"yyyy-MM-dd"', width: '10%'},
             {name: 'priority', displayName: 'Priority', type: 'number', width: '6%'},
             {name: 'responsible', displayName: 'responsible', type: 'number', width: '7%'},
-            {name: 'userCollection', displayName: 'Users (editable)', type: 'object', grouping: { groupPriority: 1 },
-                sort: { priority: 1, direction: 'asc' }, editableCellTemplate: 'ui-grid/dropdownEditor', /*enableCellEdit: false,*/ width: '20%',
-                cellFilter: 'mapGender', editDropdownValueLabel: 'gender', editDropdownOptionsArray: [
-                { id: 1, gender: 'male' },
-                { id: 2, gender: 'female' }
-            ]
-
-            }
-        ]
-
+            {name: 'userCollection', displayName: 'Users(editable)', type: 'object', enableCellEdit: true, width: '20%'}]
     };
 
 
-//ADD ROW ///////////////
+//Add Row ///////////////
 
 
     $scope.addData = function () {
@@ -80,8 +36,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
             "label": "label",
             "description": "Description",
             "status": "Status",
-            "startTime": "startTime",
-            "finishTime": "finishTime",
+            "startTime":  new Date(),
+            "finishTime":  new Date(),
             "priority": "priority",
             "responsible": "responsible",
             "userCollection": []
@@ -109,9 +65,8 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
     };
 
 
-//ADD ROW////////////
+//Add Row////////////
 
-   // $scope.gridOptions.columnDefs = [
 
 
     $scope.msg = {};
@@ -165,72 +120,21 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
                 console.error(response);
             });
         });
-
-        //Group///
-
-        $scope.gridApi.grid.registerColumnsProcessor( setGroupValues, 410 );
-        $scope.gridApi.selection.on.rowSelectionChanged( $scope, function ( rowChanged ) {
-            if ( typeof(rowChanged.treeLevel) !== 'undefined' && rowChanged.treeLevel > -1 ) {
-                // this is a group header
-                children = $scope.gridApi.treeBase.getRowChildren( rowChanged );
-                children.forEach( function ( child ) {
-                    if ( rowChanged.isSelected ) {
-                        $scope.gridApi.selection.selectRow( child.entity );
-                    } else {
-                        $scope.gridApi.selection.unSelectRow( child.entity );
-                    }
-                });
-            }
-        });
-
+        //Single filter/////
+        $scope.gridApi.grid.registerRowsProcessor( $scope.singleFilter, 200 );
+        //Single filter/////
     };
-
-        $scope.gridApi.grouping.on.aggregationChanged($scope, function(col){
-            if ( col.treeAggregation.type ){
-                $scope.lastChange = col.displayName + ' aggregated using ' + col.treeAggregation.type;
-            } else {
-                $scope.lastChange = 'Aggregation removed from ' + col.displayName;
-            }
-        });
-
-        $scope.gridApi.grouping.on.groupingChanged($scope, function(col){
-            if ( col.grouping.groupPriority ){
-                $scope.lastChange = col.displayName + ' grouped with priority ' + col.grouping.groupPriority;
-            } else {
-                $scope.lastChange = col.displayName + ' removed from grouped columns';
-            }
-        })
-
-        .filter('mapGender', function() {
-            var genderHash = {
-                1: 'male',
-                2: 'female'
-            };
-
-            return function(input) {
-                var result;
-                var match;
-                if (!input){
-                    return '';
-                } else if (result = genderHash[input]) {
-                    return result;
-                } else if ( ( match = input.match(/(.+)( \([$\d,.]+\))/) ) && ( result = genderHash[match[1]] ) ) {
-                    return result + match[2];
-                } else {
-                    return input;
-                }
-            };
-        })
-
-
-
-        ///Group ///
 
     console.log("MainCtrl: $scope.mainData.logs: " +$scope.mainData.logs);
     var userId= $scope.mainData.logs;
     if($scope.mainData.logs="false"){
         $http.get('http://localhost:8080/task/allTask')
             .success(function (data) {
+                data.forEach( function addDates( row, index ){
+                    row.startTime = new Date();
+                   //row.startTime.setDate(today.getDate() + ( index % 14 ) );
+
+                });
                 $scope.gridOptions.data = data;
             });
     }else{
@@ -243,8 +147,30 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         $window.location.reload();
         console.log("MainCtrl: $scope.mainData.logsellen : " +$scope.mainData.logs);
     }
-   
 
+    //Single filter/////
+
+    $scope.filter = function() {
+        $scope.gridApi.grid.refresh();
+    };
+
+    $scope.singleFilter = function( renderableRows ){
+        var matcher = new RegExp($scope.filterValue);
+        renderableRows.forEach( function( row ) {
+            var match = false;
+            [ 'label', 'description' ].forEach(function( field ){
+                if ( row.entity[field].match(matcher) ){
+                    match = true;
+                }
+            });
+            if ( !match ){
+                row.visible = false;
+            }
+        });
+        return renderableRows;
+    };
+
+    //Single filter/////
     $scope.user = {status: []};
 
     $scope.getCurrentSelection = function () {//betölti a showUserba a táblázatba szereplő usereket
@@ -306,7 +232,7 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
 
 
     // Keresés///////////////////
-    $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
+   /* $scope.highlightFilteredHeader = function (row, rowRenderIndex, col, colRenderIndex) {
         if (col.filters[0].term) {
             return 'header-filtered';
         } else {
@@ -325,6 +251,9 @@ app.controller('MainCtrl', ['$scope', '$http', '$log', 'uiGridConstants','$windo
         } else {
             return genderHash[input];
         }
-    };
+    };*/
+
+
 
 }]);
+

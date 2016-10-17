@@ -248,7 +248,7 @@
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../15" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../todoLogin" />
     <property name="js-jscs-nodeInterpreter" value="C:\Program Files\nodejs\node.exe" />
     <property name="LayoutCode.rearrangeEntriesHTML" value="false" />
   </component>
